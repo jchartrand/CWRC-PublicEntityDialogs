@@ -1,0 +1,62 @@
+{
+  "name": "cwrc-public-entity-dialogs",
+  "version": "0.0.0-development",
+  "description": "Dialogs for the CWRC-Writer that lookup people, places, organizations, and publications in public authority files.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jchartrand/CWRC-PublicEntityDialogs.git"
+  },
+  "keywords": [
+    "xml",
+    "rdf",
+    "editing",
+    "linked",
+    "data"
+  ],
+  "author": "“James <“jc.chartrand@gmail.com”> (http://openskysolutions.ca)",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/jchartrand/CWRC-PublicEntityDialogs/issues"
+  },
+  "homepage": "https://github.com/jchartrand/CWRC-PublicEntityDialogs#readme",
+  "devDependencies": {
+    "babel-preset-es2015": "6.22.0",
+    "babelify": "7.3.0",
+    "browserify": "14.1.0",
+    "commitizen": "2.9.6",
+    "cz-conventional-changelog": "2.0.0",
+    "semantic-release": "^6.3.2",
+    "watchify": "3.9.0"
+  },
+  "dependencies": {
+    "bootstrap": "3.3.7",
+    "corejs-typeahead": "1.1.1",
+    "handlebars": "4.0.6",
+    "jquery": "3.1.1"
+  },
+  "scripts": {
+    "browserify": "browserify test/test.js -o build/test.js --debug",
+    "watch": "watchify test/test.js -o build/test.js --debug --verbose",
+    "commit": "git-cz",
+    "test": "",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
+  }
+}
