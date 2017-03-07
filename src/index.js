@@ -63,13 +63,17 @@ function initializeVIAF() {
                             <div style="text-align:center;margin: 0 auto" id="viaf-query">
                               <input class="typeahead tt-query" type="text" placeholder="Lookup Entity" autocomplete="off" spellcheck="false"/>
                             </div>
-                            <div id="div-iframe" style="text-align:center;margin-top:2em;border-style: inset; border-color: grey; overflow: scroll; height: 500px; width: 90%"> 
-                                <iframe id="viaf-frame" width="100%" height="1000%" src="" sandbox onload="this.contentWindow.document.documentElement.scrollTop=100">Choose a name to show VIAF page.</iframe>
+                            <div id="viaf-well" class="well well-lg collapse" style="text-align:center;margin: 0 auto;margin-top:2em;width:80%">
+                                
+                                    <div id="div-iframe" style="text-align:center;border-style: inset; border-color: grey; overflow: scroll; height:350px; width:100%"> 
+                                        <iframe id="viaf-frame" width="100%" height="1000%" src="" sandbox onload="this.contentWindow.document.documentElement.scrollTop=100"></iframe>
+                                    </div>
+                          
                             </div>
                         </div><!-- /.modal-body --> 
                         <div class="modal-footer">
                             <button id="searchVIAF-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button id="searchVIAF-select" type="button" class="btn btn-default" disabled>Select</button>
+                            <button id="searchVIAF-select" type="button" class="btn btn-default" disabled>Yes, this is it.</button>
                         </div><!-- /.modal-footer -->   
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
@@ -120,12 +124,17 @@ function initializeVIAF() {
             suggestion: Handlebars.compile(suggestTemplate)
           }
         }).bind('typeahead:select', function(ev, suggestion) {
-            console.log("in the typeahead select");
             selected = suggestion;
+            $('#viaf-well').collapse('show');
             $('#viaf-frame').attr('src', `http://viaf.org/viaf/${suggestion.viafid}`);
             $('#div-iframe').scrollTop(238)
             $('#searchVIAF-select').prop('disabled', false);
         });
+
+        
+        
+
+
 }
 
 function popSearchVIAF(title, options) {
@@ -134,6 +143,7 @@ function popSearchVIAF(title, options) {
     } else {
         $('#viaf-frame').attr('src', '');
         $('#searchVIAF-select').prop('disabled', true);
+        $('#viaf-well').collapse('hide');
     }
     $('#searchVIAF-select').on('click', function() {
         let uri = `http://viaf.org/viaf/${selected.viafid}`;
