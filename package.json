@@ -2,7 +2,7 @@
   "name": "cwrc-public-entity-dialogs",
   "version": "0.0.0-development",
   "description": "Dialogs for the CWRC-Writer that lookup people, places, organizations, and publications in public authority files.",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/jchartrand/CWRC-PublicEntityDialogs.git"

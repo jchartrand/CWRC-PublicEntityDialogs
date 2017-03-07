@@ -1,4 +1,6 @@
-window.jQuery = window.$ = require('jquery');
+if (!window.$) {
+    window.jQuery = window.$ = require('jquery');
+}
 require('bootstrap');
 let typeahead = require('corejs-typeahead/index.js');
 typeahead.loadjQueryPlugin();
