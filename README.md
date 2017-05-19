@@ -29,32 +29,24 @@ let entityDialogs = require('cwrc-publi-entity-dialogs');
 
 ### API
 
-The following methods are defined in this read-only version of the dialogs:
+The following methods open bootstrap dialogs:
 
-```
-popSearchPerson(options)
-```   
 
-```
-popSearchOrganization(options)
-```   
+###### popSearchPerson(options)
 
-```
-popSearchPlace(options)
-```   
+###### popSearchOrganization(options)
 
-```
-popSearchTitle(options)
-```   
+###### popSearchPlace(options)
+
+###### popSearchTitle(options)
+  
 
 where 'options' is an object with three properties:
 
 ```
 {
     query:  The query string supplied by the end user.   
-
     success: A callback that takes one argument, an object holding the result of the lookup, defined below.
-
     cancelled: A callback with no arguments, to notify the CWRC-Writer that the entity lookup was cancelled.
 }
 ```
@@ -62,7 +54,6 @@ where 'options' is an object with three properties:
 The object returned in the `success` callback is:
 
 ```
-
 {   
     name: a string - the name of the entity to display,
     uri: uri to be used as the Linked Data URI for the entity,
