@@ -5,7 +5,7 @@
 [![downloads](https://img.shields.io/npm/dm/cwrc-public-entity-dialogs.svg)](http://npm-stat.com/charts.html?package=cwrc-public-entity-dialogs&from=2015-08-01)
 [![GPL-2.0](https://img.shields.io/npm/l/cwrc-public-entity-dialogs.svg)](http://opensource.org/licenses/GPL-2.0)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
-
+[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
 # CWRC-PublicEntityDialogs
 
@@ -17,7 +17,7 @@
 
 ### Overview
 
-The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/cwrc/CWRC-Writer) to lookup entities (people, places, organizations, and places) in VIAF.  This version of the dialogs provides only public lookup.  The version at [CWRC-Dialogs](https://github.com/cwrc/CWRC-Dialogs) also allows editing and creating entities in the CWRC entity system.
+The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/cwrc/CWRC-Writer) to lookup entities (people, places, organizations, and places) in VIAF.  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
 
 ### Installation
 
@@ -29,20 +29,44 @@ let entityDialogs = require('cwrc-publi-entity-dialogs');
 
 ### API
 
-The following methods are supported in this read only version of the dialogs:
+The following methods are supported in this read-only version of the dialogs:
 
-popSearchPerson
-popSearchOrganization
-popSearchPlace
-popSearchTitle
+`popSearchPerson(options)`   
 
+`popSearchOrganization(options)`   
+
+`popSearchPlace(options)`   
+
+`popSearchTitle(options)`   
+
+where 'options' is an object with three properties:
+
+`query`  (String) The query string supplied by the end user.  
+
+`success (Function) A callback that takes one argument, an object holding the result of the lookup:
+
+{   
+    name: a string - the name of the entity to display,
+    uri: uri to be used as the Linked Data URI for the entity,
+    id: same uri,
+    repository: the name of the authority in which the result was found, e.g., 'viaf'
+}
+
+`cancelled` (Function) A callback with no arguments, to notify the CWRC-Writer that the entity lookup was cancelled.
+
+For backwards compatability a further method that simply bundles the other four is also needed:
+
+```
 popSearch: {
         person : popSearchPerson,
         organization : popSearchOrganization,
         place : popSearchPlace,
-        title : popSearchTitle}
+        title : popSearchTitle
+        }
+```
+-----
 
-The following methods are included for compatability.  They spawn a popup saying the given feature isn't available:
+The following methods are included for compatability.  They spawn a popup saying the given feature isn't available.  They will likely soon be removed.  Any creation of entities should now be made outside the CWRC-Writer and within the entity management itself.
 
 initialize
 initializeWithCookieData
@@ -77,5 +101,7 @@ setPlaceSchema
 ### Development
 
 An index.html is provided along with a browserify/watchify script in the package.json to allow working with the dialogs in a local browser.
+
+Note that the css rules are added dynamically through javascript.
 
 
