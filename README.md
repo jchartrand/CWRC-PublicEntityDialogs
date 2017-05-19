@@ -29,21 +29,38 @@ let entityDialogs = require('cwrc-publi-entity-dialogs');
 
 ### API
 
-The following methods are supported in this read-only version of the dialogs:
+The following methods are defined in this read-only version of the dialogs:
 
-`popSearchPerson(options)`   
+```
+popSearchPerson(options)
+```   
 
-`popSearchOrganization(options)`   
+```
+popSearchOrganization(options)
+```   
 
-`popSearchPlace(options)`   
+```
+popSearchPlace(options)
+```   
 
-`popSearchTitle(options)`   
+```
+popSearchTitle(options)
+```   
 
 where 'options' is an object with three properties:
 
-`query`  (String) The query string supplied by the end user.  
+```
+{
+    query:  The query string supplied by the end user.   
 
-`success (Function) A callback that takes one argument, an object holding the result of the lookup:
+    success: A callback that takes one argument, an object holding the result of the lookup, defined below.
+
+    cancelled: A callback with no arguments, to notify the CWRC-Writer that the entity lookup was cancelled.
+```
+
+The object returned in the `success` callback is:
+
+```
 
 {   
     name: a string - the name of the entity to display,
@@ -51,10 +68,9 @@ where 'options' is an object with three properties:
     id: same uri,
     repository: the name of the authority in which the result was found, e.g., 'viaf'
 }
+```
 
-`cancelled` (Function) A callback with no arguments, to notify the CWRC-Writer that the entity lookup was cancelled.
-
-For backwards compatability a further method that simply bundles the other four is also needed:
+For backwards compatability a further method that simply bundles the other four lookup methods is also needed:
 
 ```
 popSearch: {
