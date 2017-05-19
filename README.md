@@ -56,6 +56,7 @@ where 'options' is an object with three properties:
     success: A callback that takes one argument, an object holding the result of the lookup, defined below.
 
     cancelled: A callback with no arguments, to notify the CWRC-Writer that the entity lookup was cancelled.
+}
 ```
 
 The object returned in the `success` callback is:
@@ -65,7 +66,7 @@ The object returned in the `success` callback is:
 {   
     name: a string - the name of the entity to display,
     uri: uri to be used as the Linked Data URI for the entity,
-    id: same uri,
+    id: same as uri,
     repository: the name of the authority in which the result was found, e.g., 'viaf'
 }
 ```
@@ -84,35 +85,37 @@ popSearch: {
 
 The following methods are included for compatability.  They spawn a popup saying the given feature isn't available.  They will likely soon be removed.  Any creation of entities should now be made outside the CWRC-Writer and within the entity management itself.
 
-initialize
-initializeWithCookieData
-initializeWithLogin
+initialize   
+initializeWithCookieData   
+initializeWithLogin   
     
-popCreatePerson
-popCreateOrganization
-popCreatePlace
-popCreateTitle
+popCreatePerson  
+popCreateOrganization  
+popCreatePlace  
+popCreateTitle  
 
-popCreate: {
-    person: popCreatePerson, 
-    organization: popCreateOrganization, 
-    place: popCreatePlace, 
-    title: popCreateTitle }
+popCreate: {  
+    person: popCreatePerson,   
+    organization: popCreateOrganization,  
+    place: popCreatePlace,  
+    title: popCreateTitle 
+    }   
 
-popEdit: {
-    person : popEditPerson,
-    organization : popEditOrganization,
-    place : popEditPlace,
-    title : popEditTitle }
+popEdit: {  
+    person : popEditPerson,  
+    organization : popEditOrganization,  
+    place : popEditPlace,  
+    title : popEditTitle 
+    }    
 
-setCwrcApi
-setRepositoryBaseObjectURL
-setGeonameUrl
-setGoogleGeocodeUrl
-setViafUrl
-setPersonSchema
-setOrganizationSchema
-setPlaceSchema
+setCwrcApi  
+setRepositoryBaseObjectURL  
+setGeonameUrl  
+setGoogleGeocodeUrl  
+setViafUrl  
+setPersonSchema  
+setOrganizationSchema  
+setPlaceSchema  
 
 ### Development
 
