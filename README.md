@@ -1,6 +1,6 @@
-![Picture](http://www.cwrc.ca/wp-content/uploads/2010/12/CWRC_Dec-2-10_smaller.png)
+![Picture](http://cwrc.ca/logos/CWRC_logos_2016_versions/CWRCLogo-Horz-FullColour.png)
 
-[![Travis](https://img.shields.io/travis/jchartrand/CWRC-PublicEntityDialogs.svg)](https://travis-ci.org/jchartrand/CWRC-PublicEntityDialogs)
+[![Travis](https://img.shields.io/travis/cwrc/CWRC-PublicEntityDialogs.svg)](https://travis-ci.org/cwrc/CWRC-PublicEntityDialogs)
 [![version](https://img.shields.io/npm/v/cwrc-public-entity-dialogs.svg)](http://npm.im/cwrc-public-entity-dialogs)
 [![downloads](https://img.shields.io/npm/dm/cwrc-public-entity-dialogs.svg)](http://npm-stat.com/charts.html?package=cwrc-public-entity-dialogs&from=2015-08-01)
 [![GPL-2.0](https://img.shields.io/npm/l/cwrc-public-entity-dialogs.svg)](http://opensource.org/licenses/GPL-2.0)
@@ -21,7 +21,7 @@ The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/
 
 ### Installation
 
-npm i cwrc-publi-entity-dialogs
+npm i cwrc-publi-entity-dialogs -S
 
 ### Use
 
@@ -74,7 +74,7 @@ popSearch: {
 ```
 -----
 
-The following methods are included for compatability.  They spawn a popup saying the given feature isn't available.  They will likely soon be removed.  Any creation of entities should now be made outside the CWRC-Writer and within the entity management itself.
+The following methods are included for compatability with past versions of the CWRC-Writer.  They spawn a popup saying the given feature isn't available.  The methods will likely soon be removed.  Any creation of entities should now be made outside the CWRC-Writer and within the authority control itself.
 
 initialize   
 initializeWithCookieData   
