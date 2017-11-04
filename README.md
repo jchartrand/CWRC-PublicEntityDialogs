@@ -19,17 +19,44 @@
 
 ### Overview
 
-The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/cwrc/CWRC-Writer) to lookup entities (people, places, organizations, and places) in VIAF.  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
+The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/cwrc/CWRC-Writer) to lookup entities (people, places, organizations, and places) in various public name authority files (e.g., VIAF) or databases (e.g., Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
 
 ### Installation
 
-npm i cwrc-publi-entity-dialogs -S
+npm i cwrc-public-entity-dialogs -S
 
 ### Use
 
 let entityDialogs = require('cwrc-publi-entity-dialogs');
 
+The dialogs must also be configured with public entity sources, using the registerEntitySources method (see API below)
+
 ### API
+
+###### registerEntitySources(sources)
+
+where ```soruces``` is an object like:
+
+```
+{
+    people: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    places: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    organizations: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    titles: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+}
+```
+
+and each of the values passed on the set methods is an imported module, e.g.,
+
+```
+let viaf = require('viaf-entity-lookup')
+let wikidata = require('wikidata-entity-lookup')
+let getty = require('getty-entity-lookup')
+```
+
+Each of the npm modules listed above can currently be used.  We expect to soon have a DBPedia module as well.
+
+Entity sources must be registered.  See the [CWRCWriter](https://github.com/cwrc/CWRC-GitWriter/blob/master/src/js/app.js) for an example of usage, or the test/test.js file in this repository, which uses mockes for the entity sources.
 
 The following methods open bootstrap dialogs:
 
