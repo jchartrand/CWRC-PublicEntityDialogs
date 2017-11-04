@@ -40,7 +40,6 @@ The following methods open bootstrap dialogs:
 
 ###### popSearchTitle(options)
   
-
 where 'options' is an object with three properties:
 
 ```
@@ -61,57 +60,12 @@ The object returned in the `success` callback is:
     repository: the name of the authority in which the result was found, e.g., 'viaf'
 }
 ```
-
-For backwards compatability a further method that simply bundles the other four lookup methods is also needed:
-
-```
-popSearch: {
-        person : popSearchPerson,
-        organization : popSearchOrganization,
-        place : popSearchPlace,
-        title : popSearchTitle
-        }
-```
 -----
-
-The following methods are included for compatability with past versions of the CWRC-Writer.  They spawn a popup saying the given feature isn't available.  The methods will likely soon be removed.  Any creation of entities should now be made outside the CWRC-Writer and within the authority control itself.
-
-initialize   
-initializeWithCookieData   
-initializeWithLogin   
-    
-popCreatePerson  
-popCreateOrganization  
-popCreatePlace  
-popCreateTitle  
-
-popCreate: {  
-    person: popCreatePerson,   
-    organization: popCreateOrganization,  
-    place: popCreatePlace,  
-    title: popCreateTitle 
-    }   
-
-popEdit: {  
-    person : popEditPerson,  
-    organization : popEditOrganization,  
-    place : popEditPlace,  
-    title : popEditTitle 
-    }    
-
-setCwrcApi  
-setRepositoryBaseObjectURL  
-setGeonameUrl  
-setGoogleGeocodeUrl  
-setViafUrl  
-setPersonSchema  
-setOrganizationSchema  
-setPlaceSchema  
 
 ### Development
 
-An index.html is provided along with a browserify/watchify script in the package.json to allow working with the dialogs in a local browser.
+development.html is provided along with browserify and watch scripts in the package.json to allow working with the dialogs in a local browser.
 
-Note that the css rules are added dynamically through javascript.
+[CWRC-Writer-Dev-Docs](https://github.com/jchartrand/CWRC-Writer-Dev-Docs) explains how to work with CWRC-Writer GitHub repositories, including this one.
 
 
