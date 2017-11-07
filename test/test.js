@@ -53,15 +53,25 @@ function getGettyStubs() {
     }
 }
 
-function getEntitySourceStubs() {
+
+function getDbpediaStubs() {
     return {
-        people: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()),
-        places: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()),
-        organizations: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()),
-        titles: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()),
+        findPerson: sinon.stub().resolves(fixtures.dbpedia.people),
+        findPlace: sinon.stub().resolves(fixtures.dbpedia.places),
+        findOrganization:sinon.stub().resolves(fixtures.dbpedia.organizations),
+        findTitle: sinon.stub().resolves(fixtures.dbpedia.titles)
     }
 }
 
+
+function getEntitySourceStubs() {
+    return {
+        people: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        places: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        organizations: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+        titles: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+    }
+}
 
 
 // test('popSearchPerson', (assert=>{testEntityType('people', popSearchPerson)}

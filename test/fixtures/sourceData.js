@@ -52,5 +52,27 @@ module.exports = {
             places: [
             {name: 'getty-name3',  id: 'getty-Id3', uri: testURI }
         ]
+    },
+    dbpedia: {
+        people: [
+            {name: 'dbpedia-name1', description: 'dbpedia-1description', id: 'dbpedia-Id', uri: testURI },
+            {name: 'dbpedia-name2', id: 'dbpedia-Id2', uri: testURI }
+        ],
+        places: [
+            {name: 'dbpedia-name3', description: 'dbpedia-description3', id: 'dbpedia-Id3', uri: testURI },
+            {name: 'dbpedia-name4',  id: 'dbpedia-Id4', uri: anotherTestURI}
+        ],
+        organizations: [
+            {name: 'dbpedia-name6', description: 'dbpedia-description6', id: 'dbpedia-Id6', uri: testURI },
+            {name: 'dbpedia-name13', description: 'dbpedia-description18', id: 'dbpedia-Id55', uri: testURI },
+            {name: 'dbpedia-name66', description: 'dbpedia-description66', id: 'dbpedia-Id66', uri: testURI }
+
+        ],
+        titles: [
+            {name: 'dbpedia-name7', description: 'dbpedia-description7', id: 'dbpedia-Id7', uri: testURI },
+            {name: 'dbpedia-name8', description: 'dbpedia-description8', id: 'dbpedia-Id8', uri: testURI },
+            {name: 'dbpedia-name9', description: 'dbpedia-description9', id: 'dbpedia-Id9', uri: testURI },
+            {name: 'dbpedia-name12', description: 'dbpedia-description12', id: 'dbpedia-Id12', uri: testURI }
+        ]
     }
 }

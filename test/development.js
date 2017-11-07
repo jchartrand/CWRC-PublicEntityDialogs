@@ -1,34 +1,35 @@
 // file on which to run browserify/watchify when manually testing (in a browser)
 // or when working on the module (to see the effect of changes in the browser).
 'use strict';
-/*if (!window.$) {
+if (!window.$) {
     window.jQuery = window.$ = require('jquery')
 }
 let dialogs = require('../src/index.js')
 let viaf = require('viaf-entity-lookup')
 let wikidata = require('wikidata-entity-lookup')
 let getty = require('getty-entity-lookup')
+let dbpedia = require('dbpedia-entity-lookup')
 
 dialogs.registerEntitySources({
-    people: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('getty',getty),
-    places: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf),
-    organizations: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata),
-    titles: (new Map()).set('viaf', viaf).set('dbpedia',  viaf).set('wikidata', wikidata),
+    people: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('getty',getty).set('dbpedia',dbpedia),
+    places: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf).set('dbpedia',dbpedia),
+    organizations: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
+    titles: (new Map()).set('viaf', viaf).set('dbpedia',  viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
 })
 
 let queryOptions = {
     query: 'jones',
     success: (result)=>console.log(result),
-    error: (error)=>console.log(error),
     cancelled: ()=>console.log('cancelled'),
 }
 
 $('#entity-dialog').on('click', function() {	
 	dialogs.popSearchPerson(queryOptions)
-})*/
+})
 
 
 
+/*
 
 'use strict';
 
@@ -77,12 +78,21 @@ function getGettyStubs() {
     }
 }
 
+function getDbpediaStubs() {
+    return {
+        findPerson: sinon.stub().resolves(fixtures.dbpedia.people),
+        findPlace: sinon.stub().resolves(fixtures.dbpedia.places),
+        findOrganization:sinon.stub().resolves(fixtures.dbpedia.organizations),
+        findTitle: sinon.stub().resolves(fixtures.dbpedia.titles)
+    }
+}
+
 function getEntitySourceStubs() {
     return {
-        people: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()),
-        places: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()),
-        organizations: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()),
-        titles: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()),
+        people: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        places: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        organizations: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+        titles: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
     }
 }
 
@@ -183,3 +193,4 @@ test('popSearchTitle',   function(assert){
     testEntityType(assert, 'popSearchTitle','titles', 'findTitle');
 
 })
+*/

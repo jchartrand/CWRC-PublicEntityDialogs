@@ -72,9 +72,6 @@ function showPopover(result, li, ev) {
         }
     }
 
-
-    // li.setAttribute('data-toggle', 'popover')
-
     popoverAnchor = $(li);
 
     popoverAnchor.popover({
@@ -90,7 +87,6 @@ function showPopover(result, li, ev) {
     popoverAnchor.popover('show')
 
     // resize the popover
-   // popoverAnchor.on("show.bs.popover", (e)=> popover.data("bs.popover").tip().css({"max-width": "40em"}))
     popoverAnchor.data("bs.popover").tip().css({"max-width": "40em"})
 
     // add a check on the modal for a click event --> this will close the popover
@@ -101,10 +97,6 @@ function showPopover(result, li, ev) {
         // remove this click handler
         $('#cwrc-entity-lookup').off('.popover')
     })
-
-    // bootstrap requires us to enable the popover
-    // I think i've already enabled it above, though.
-   // $('[data-toggle="popover"]').popover()
 
 }
 
@@ -118,18 +110,9 @@ function showResults(results, entitySourceName, searchOptions) {
         let div = document.createElement('div')
         li.appendChild(div)
 
-        //let uniqueId = entitySourceName + i;
-       // a.setAttribute('data-toggle', 'popover')
-        //a.setAttribute('id', uniqueId)
-       // a.setAttribute('tabindex', 0)
-       // a.setAttribute('role', 'button')
-
         div.innerHTML=result.description?
             `<b>${result.name}</b> - <i>${result.description}</i>`:
             `<b>${result.name}</b>`
-
-        //let adjustHeightIIFE = `(function(popoverAnchorElem, iframe){$(popoverAnchorElem).next('.popover-content').css('height', (iframe.style.height=iframe.contentWindow.document.body.scrollHeight + 'px'))})('#${uniqueId}', this)`
-        // onload="$('#${uniqueId}').next('.popover-content').css('height', 550)">
 
         resultList.appendChild(li)
         $(li).on('click', function(ev){showPopover(result, li, ev)})
