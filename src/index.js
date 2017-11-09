@@ -300,6 +300,13 @@ module.exports = {
     popSearchPlace: popSearchPlace,
     popSearchTitle: popSearchTitle,
 
+    popSearch: {
+            person : popSearchPerson,
+            organization : popSearchOrganization,
+            place : popSearchPlace,
+            title : popSearchTitle
+        }
+
 }
 
 /*
