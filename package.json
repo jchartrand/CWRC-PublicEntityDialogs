@@ -25,6 +25,7 @@
     "cm": "git-cz",
     "precommit": "npm run test && npm run check-coverage",
     "browserify": "mkdirp build && browserify test/development.js -o build/development.js --debug ",
+    "build": "mkdirp dist && browserify src/index.js --s cwrcdialogs > dist/cwrcdialogs.js",
     "watch": "mkdirp build && watchify test/development.js -o build/development.js --debug --verbose ",
     "test": "mkdirp coverage && npm run test:electron && npm run generate-coverage",
     "test:browser": "browserify -t browserify-istanbul test/test.js | browser-run  -p 2222 --static .  | node test/extract-coverage.js | faucet",

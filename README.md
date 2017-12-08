@@ -13,7 +13,7 @@
 
 1. [Overview](#overview)
 1. [Installation](#installation)
-1. [Use](#use)
+1. [Configuration](#configuration)
 1. [API](#api)
 1. [Development](#development)
 
@@ -23,13 +23,38 @@ The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/
 
 ### Installation
 
+The dialogs are to be used in a web browser.  You may incorporate them into your own javascript application in two ways:
+
+1.  **Script tag**  
+
+Download the dist/cwrcdialogs.js file and make it available on your server, then include it in a script tag in your html file:
+
+```
+<body>
+<script type="text/javascript" src ="./pathToTheFileOnYourServer/cwrcdialogs.js"></script>
+</body>
+```
+
+You can then access the dialogs in javascript through the global variable 'cwrcdialogs':
+
+```window.cwrcdialogs```
+
+
+2. **NPM**
+
+This assumes that your whole javascript project will be built around NPM, and that'll you bundle your javascript using something like [Browserify](http://browserify.org) or [webpack](https://webpack.js.org).  The bundlers themselves are well documented, and you can also look to See the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter) which uses browserify, and uses the CWRC-PublicEntityDialogs.
+
+Install the package and save in dependencies (in package.json):
+
 npm i cwrc-public-entity-dialogs -S
 
-### Use
+Include the dialogs in your javascript:
 
-let entityDialogs = require('cwrc-publi-entity-dialogs');
+let entityDialogs = require('cwrc-public-entity-dialogs');
 
-The dialogs must also be configured with public entity sources, using the registerEntitySources method (see API below)
+### Configuration
+
+The dialogs must be configured with public entity sources, using the registerEntitySources method (see API below)
 
 ### API
 
@@ -57,7 +82,7 @@ let dbpedia = require('dbpedia-entity-lookup')
 
 Each of the npm modules listed above can currently be used.  We expect to later add GeoCode and GeoNames.
 
-Entity sources must be registered.  See the [CWRCWriter](https://github.com/cwrc/CWRC-GitWriter/blob/master/src/js/app.js) for an example of usage, or the test/test.js file in this repository, which uses mockes for the entity sources.
+Entity sources must be registered.  See the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter/blob/master/src/js/app.js) for an example of usage, or the test/test.js file in this repository, which uses mockes for the entity sources.
 
 The following methods open bootstrap dialogs:
 
