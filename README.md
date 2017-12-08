@@ -19,11 +19,15 @@
 
 ### Overview
 
-The CWRC-PublicEntityDialogs are used with the [CWRC-Writer](https://github.com/cwrc/CWRC-Writer) to lookup entities (people, places, organizations, and places) in various public name authority files (e.g., VIAF) or databases (e.g., Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
+The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and places) in various public name authority files (e.g., VIAF) or databases (e.g., Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
+
+An example of their use with the CWRC-WriterBase is the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter)
+
+The dialogs could also be used outside of the CWRC-WriterBase, as described below.
 
 ### Installation
 
-The dialogs are to be used in a web browser.  You may incorporate them into your own javascript application in two ways:
+The dialogs are to be used in a web browser.  You may therefore incorporate them into your own javascript application in two ways:
 
 1.  **Script tag**  
 
@@ -42,16 +46,17 @@ You can then access the dialogs in javascript through the global variable 'cwrcd
 
 2. **NPM**
 
-This assumes that your whole javascript project will be built around NPM, and that'll you bundle your javascript using something like [Browserify](http://browserify.org) or [webpack](https://webpack.js.org).  The bundlers themselves are well documented, and you can also look to See the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter) which uses browserify, and uses the CWRC-PublicEntityDialogs.
+This assumes that your whole javascript project will be built around NPM, and that'll you bundle your javascript using something like [Browserify](http://browserify.org) or [webpack](https://webpack.js.org).  The bundlers themselves are well documented, and you can also look at the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter) which uses browserify, and uses the CWRC-PublicEntityDialogs.
 
-Install the package and save in dependencies (in package.json):
+Install the cwrc-public-entity-dialogs NPM package into your project and save in dependencies (in your package.json):
 
-npm i cwrc-public-entity-dialogs -S
+```npm i cwrc-public-entity-dialogs -S```
 
 Include the dialogs in your javascript:
 
-let entityDialogs = require('cwrc-public-entity-dialogs');
+```let entityDialogs = require('cwrc-public-entity-dialogs');```
 
+(**NOTE:**  the package.json in this repository, and it's use of browserify, is for development work on this package, and is not meant to be a template from which you can start your own project that uses these dialogs.  Again, the best example of how to use these dialogs through NPM is the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter).)
 ### Configuration
 
 The dialogs must be configured with public entity sources, using the registerEntitySources method (see API below)
