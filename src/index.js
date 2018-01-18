@@ -1,7 +1,8 @@
-if (!window.$) {
-    window.jQuery = window.$ = require('jquery');
-}
+var prevJQuery = window.jQuery;
+var $ = require('jquery');
+window.jQuery = $;
 require('bootstrap');
+window.jQuery = prevJQuery;
 
 
 // entitySources is an object passed in by registerEntitySources that looks like:
