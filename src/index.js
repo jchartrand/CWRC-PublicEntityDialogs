@@ -125,7 +125,7 @@ function initializeEntityPopup(searchOptions) {
     if (! document.getElementById('cwrc-entity-lookup') ) {
         $(document.body).append($.parseHTML(
             `<div id="cwrc-entity-lookup" class="modal fade">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-lg ui-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
