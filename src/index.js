@@ -82,7 +82,7 @@ function showPopover(result, li, ev) {
         //placement: "auto",
         html: true,
         title: result.name,
-        content: ()=>`<iframe id="entity-iframe" src="${result.uri}" style="border:none;height:40em;width:38em"/>`
+        content: ()=>`<iframe id="entity-iframe" src="${result.uriForDisplay}" style="border:none;height:40em;width:38em"/>`
     })
 
     popoverAnchor.popover('show')

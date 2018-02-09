@@ -123,7 +123,7 @@ function testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult )
     // ASSERT
     let iframe = document.getElementById("entity-iframe");
     assert.ok(isElementVisible(iframe), 'the iframe was shown');
-    assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uri), 'the iframe src was set to the correct url')
+    assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay), 'the iframe src was set to the correct url')
     // xhr.restore();
 }
 

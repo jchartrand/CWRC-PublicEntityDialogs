@@ -11,7 +11,7 @@ let getty = require('getty-entity-lookup')
 let dbpedia = require('dbpedia-entity-lookup')
 
 dialogs.registerEntitySources({
-    people: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('getty',getty).set('dbpedia',dbpedia),
+    people: (new Map()).set('viaf', viaf).set('wikidata', wikidata).set('getty',getty).set('dbpedia',dbpedia),
     places: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf).set('dbpedia',dbpedia),
     organizations: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
     titles: (new Map()).set('viaf', viaf).set('dbpedia',  viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
