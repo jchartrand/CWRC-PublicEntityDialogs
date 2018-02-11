@@ -15,6 +15,7 @@
 ## Steps to Reproduce (for bugs)
 <!--- Provide an unambiguous set of steps to -->
 <!--- reproduce this bug.  Screenshots are invaluable.  -->
+<!--  Links to screenvideos can help a lot too. -->
 1.
 2.
 3.
