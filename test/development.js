@@ -9,10 +9,11 @@ let viaf = require('viaf-entity-lookup')
 let wikidata = require('wikidata-entity-lookup')
 let getty = require('getty-entity-lookup')
 let dbpedia = require('dbpedia-entity-lookup')
+let geonames = require('geonames-entity-lookup')
 
 dialogs.registerEntitySources({
     people: (new Map()).set('viaf', viaf).set('wikidata', wikidata).set('getty',getty).set('dbpedia',dbpedia),
-    places: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf).set('dbpedia',dbpedia),
+    places: (new Map()).set('viaf', viaf).set('geonames', geonames).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf).set('dbpedia',dbpedia),
     organizations: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
     titles: (new Map()).set('viaf', viaf).set('dbpedia',  viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
 })
@@ -24,7 +25,7 @@ let queryOptions = {
 }
 
 $('#entity-dialog').on('click', function() {	
-	dialogs.popSearchPerson(queryOptions)
+	dialogs.popSearchPlace(queryOptions)
 })
 
 

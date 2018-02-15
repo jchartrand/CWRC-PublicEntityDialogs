@@ -70,7 +70,7 @@ where ```sources``` is an object like:
 ```
 {
     people: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
-    places: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
+    places: (new Map()).set('geonames', geonames).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
     organizations: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
     titles: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
 }
@@ -83,9 +83,10 @@ let viaf = require('viaf-entity-lookup')
 let wikidata = require('wikidata-entity-lookup')
 let getty = require('getty-entity-lookup')
 let dbpedia = require('dbpedia-entity-lookup')
+let geonames = require('geonames-entity-lookup')
 ```
 
-Each of the npm modules listed above can currently be used.  We expect to later add GeoCode and GeoNames.
+Each of the npm modules listed above can currently be used.  
 
 Entity sources must be registered.  See the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter/blob/master/src/js/app.js) for an example of usage, or the test/test.js file in this repository, which uses mockes for the entity sources.
 

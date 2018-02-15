@@ -28,6 +28,13 @@ function getQueryOptionsWithCallbackSpy() {
 
 const fixtures = require('./fixtures/sourceData');
 
+function getGeonamesStubs() {
+    return {
+
+        findPlace: sinon.stub().resolves(fixtures.geonames.places)
+    }
+}
+
 function getViafStubs() {
     return {
         findPerson: sinon.stub().resolves(fixtures.viaf.people),
@@ -67,7 +74,7 @@ function getDbpediaStubs() {
 function getEntitySourceStubs() {
     return {
         people: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
-        places: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        places: (new Map()).set('geonames', getGeonamesStubs()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
         organizations: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
         titles: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
     }
@@ -154,8 +161,6 @@ function isElementVisible(element) {
     //return ! isElementHidden(element)
     return $(element).is(':visible')
 }
-
-
 test('popSearchPerson',   function(assert){
     testEntityType(assert, 'popSearchPerson', 'people', 'findPerson')
 })

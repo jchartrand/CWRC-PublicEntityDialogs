@@ -3,6 +3,13 @@ const anotherTestURI = 'http://shtsthr.com';
 const displayURI = "https://ohoh.pa"
 
 module.exports = {
+    geonames: {
+        places: [
+            {name: 'geonames-name-3', description: 'geonames-3', id: 'geonames-Id3', uri: testURI, uriForDisplay: displayURI  },
+            {name: 'geonames-name-4', description: 'geonames-4', id: 'geonames-Id4', uri: anotherTestURI, uriForDisplay: displayURI },
+            {name: 'geonames-name-5', description: 'geonames-5', id: 'geonames-Id5', uri: testURI, uriForDisplay: displayURI  }
+        ]
+    },
     viaf: {
         people: [
             {name: 'viaf-name-1', description: 'viaf-1', id: 'viaf-Id', uri: testURI, uriForDisplay: displayURI  },
