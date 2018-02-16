@@ -108,15 +108,26 @@ function showResults(results, entitySourceName, searchOptions) {
         let li = document.createElement('li')
         li.className = 'list-group-item cwrc-result-item'
 
-        let div = document.createElement('div')
-        li.appendChild(div)
-
-        div.innerHTML=result.description?
+        let descDiv = document.createElement('div')
+        li.appendChild(descDiv)
+        descDiv.innerHTML=result.description?
             `<b>${result.name}</b> - <i>${result.description}</i>`:
             `<b>${result.name}</b>`
 
+        if (result.externalLink) {
+            let linkDiv = document.createElement('div')
+            li.appendChild(linkDiv)
+            linkDiv.innerHTML =
+                `<a href="${result.externalLink}" target="_blank">Open Full Description in New Window</a>`
+        }
+
         resultList.appendChild(li)
-        $(li).on('click', function(ev){showPopover(result, li, ev)})
+
+        if (result.uriForDisplay) {
+            $(li).on('click', function (ev) {
+                showPopover(result, li, ev)
+            })
+        }
         li.ondblclick = ()=>returnResult(result, searchOptions)
     })
 }

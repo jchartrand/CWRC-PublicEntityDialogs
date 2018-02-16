@@ -48,7 +48,7 @@
     "cz-conventional-changelog": "2.0.0",
     "dbpedia-entity-lookup": "^0.3.0",
     "faucet": "0.0.1",
-    "geonames-entity-lookup": "^1.0.0",
+    "geonames-entity-lookup": "^1.1.1",
     "getty-entity-lookup": "^1.4.1",
     "husky": "0.13.3",
     "istanbul": "0.4.5",
