@@ -134,7 +134,8 @@ function showResults(results, entitySourceName, searchOptions) {
 
 function initializeEntityPopup(searchOptions) {
     if (! document.getElementById('cwrc-entity-lookup') ) {
-        $(document.body).append($.parseHTML(
+        var el = searchOptions.parentEl || document.body;
+        $(el).append($.parseHTML(
             `<div id="cwrc-entity-lookup" class="modal fade">
                 <div class="modal-dialog modal-lg ui-dialog">
                     <div class="modal-content">
@@ -249,9 +250,11 @@ function initializeEntityPopup(searchOptions) {
                         </form>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->`
+            <!-- /.modal -->
+            </div>`
         ));
-        $('#cwrc-entity-lookup-cancel').on('click', ()=>cancel(searchOptions));
+        $('#cwrc-entity-lookup button[data-dismiss="modal"]').on('click', ()=>cancel(searchOptions));
+        
         $('#cwrc-entity-lookup-title').text(searchOptions.entityLookupTitle);
 
         $('#entity-search-form').submit(function(event) {
@@ -265,6 +268,11 @@ function initializeEntityPopup(searchOptions) {
         })
     }
     $('#cwrc-entity-lookup').modal('show');
+    
+	if (searchOptions.parentEl) {
+		var data = $('#cwrc-entity-lookup').data('bs.modal');
+		data.$backdrop.detach().appendTo(searchOptions.parentEl);
+	}
 }
 
 function layoutPanels(searchOptions) {
