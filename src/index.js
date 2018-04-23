@@ -152,6 +152,20 @@ function initializeEntityPopup(searchOptions) {
                             <div style="width:100%">  
                                 <div style="display:inline-block;width:70%">
                                 
+                                    <div class="panel-group cwrc-result-panel" id="cwrc-cwrc-panel">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse0">CWRC</a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse0" class="panel-collapse collapse in">
+                                                <ul class="list-group cwrc-result-list" id="cwrc-cwrc-list">
+                                                </ul>  
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="panel-group cwrc-result-panel" id="cwrc-viaf-panel">
                                         <div class="panel panel-default">
                                           <div class="panel-heading">
