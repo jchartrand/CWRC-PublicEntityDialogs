@@ -1,8 +1,15 @@
-var prevJQuery = window.jQuery;
-var $ = require('jquery');
-window.jQuery = $;
-require('bootstrap');
-window.jQuery = prevJQuery;
+'use strict';
+
+// shared instance of bootstraped jquery for entity and git dialogs
+let $ = window.cwrcQuery
+if ($ === undefined) {
+    let prevJQuery = window.jQuery
+    $ = require('jquery')
+    window.jQuery = $
+    require('bootstrap')
+    window.jQuery = prevJQuery
+    window.cwrcQuery = $
+}
 
 
 // entitySources is an object passed in by registerEntitySources that looks like:
