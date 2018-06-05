@@ -1,6 +1,7 @@
 'use strict';
 
-const test = require('tape');
+let $ = require('jquery')
+const test = require('tape-catch');
 const sinon = require('sinon');
 
 
@@ -9,10 +10,6 @@ test.onFinish(()=>{
     console.log('# coverage:', JSON.stringify(window.__coverage__))
     window.close()
 });
-
-if (!window.$) {
-    window.jQuery = window.$ = require('jquery')
-}
 
 // couple other tests might want:
 // - that entity sources aren't shown if the config doesn't list them.
@@ -83,17 +80,20 @@ function getEntitySourceStubs() {
 
 // test('popSearchPerson', (assert=>{testEntityType('people', popSearchPerson)}
 async function testEntityType(assert, methodToTest, entityType, entitySourceMethod) {
-// 'ASSEMBLE'
+    // 'ASSEMBLE'
+    // doesModalExist(assert)
     let dialogsCopy = require('../src/index.js')
     let entitySources = getEntitySourceStubs();
     let queryOptions = getQueryOptionsWithCallbackSpy();
     dialogsCopy.registerEntitySources(entitySources)
+
     // 'ACT'
     await dialogsCopy[methodToTest](queryOptions);
-    // seem to need this timeout to force rendering of modal.
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // await new Promise(resolve => setTimeout(resolve, 100));
+
     // 'ASSERT
     entitySources[entityType].forEach((entitySource, entitySourceName) => {
+        // assert.comment(entitySourceName)
         assert.ok(entitySource[entitySourceMethod].calledWith(queryOptions.query), 'called with query')
         assert.ok(entitySource[entitySourceMethod].calledOnce, 'called only once')
 
@@ -104,15 +104,19 @@ async function testEntityType(assert, methodToTest, entityType, entitySourceMeth
     assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
 
     const fixtureForSelectedResult = fixtures.viaf[entityType][1]
-    const elementForSelectedResult = document.getElementById('cwrc-viaf-list').querySelectorAll('li')[1];
+    const elementForSelectedResult = document.getElementById('cwrc-viaf-list').querySelectorAll('a')[1];
+
+    // assert.comment('list visible: '+document.getElementById('cwrc-viaf-list').outerHTML)
+    // assert.comment('selected el: '+elementForSelectedResult.outerHTML)
 
     testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult)
     testSelection(assert, fixtureForSelectedResult, elementForSelectedResult, queryOptions)
     assert.end()
+    // assert.comment('--- end ---')
 }
 
 function confirmShownTextMatchesFixtureTest(entitySourceName, entityType, assert) {
-    document.getElementById(`cwrc-${entitySourceName}-list`).querySelectorAll('li').forEach((result, index) => {
+    document.getElementById(`cwrc-${entitySourceName}-list`).querySelectorAll('a').forEach((result, index) => {
         let fixtureResult = fixtures[entitySourceName][entityType][index];
         let textThatWasShown = result.getElementsByTagName('div')[0].textContent
         let textThatShouldHaveBeenShown = fixtureResult.description ?
@@ -125,26 +129,27 @@ function confirmShownTextMatchesFixtureTest(entitySourceName, entityType, assert
 function testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult ) {
 
     // ACT: click on second result of viaf results
-    elementForSelectedResult.click()
+    $(elementForSelectedResult).click()
 
     // ASSERT
     let iframe = document.getElementById("entity-iframe");
     assert.ok(isElementVisible(iframe), 'the iframe was shown');
     assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay), 'the iframe src was set to the correct url')
     // xhr.restore();
+    // await new Promise(resolve => setTimeout(resolve, 50));
+    $(elementForSelectedResult).click() // click again to de-select
 }
 
 function testSelection(assert, fixtureForSelectedResult, elementForSelectedResult, queryOptions ) {
+    $(elementForSelectedResult).click()
+    $('#cwrc-entity-lookup-select').click()
 
-    // ACT : dbl click to select a result
-    $(elementForSelectedResult).dblclick()
     //await new Promise(resolve => setTimeout(resolve, 1000));
     assert.ok(isElementForIdHidden('cwrc-entity-lookup'), 'the modal was hidden')
 
     // ASSERT
     assert.ok(queryOptions.success.calledOnce)
     assert.ok(queryOptions.success.calledWith(fixtureForSelectedResult), 'the correct result was returned')
-
 }
 
 function isElementForIdVisible(elementId){
@@ -161,6 +166,12 @@ function isElementVisible(element) {
     //return ! isElementHidden(element)
     return $(element).is(':visible')
 }
+function doesModalExist(assert) {
+    let b = new Boolean(document.getElementById('cwrc-entity-lookup') !== null)
+    assert.comment('doesModalExist: '+b.toString())
+}
+
+
 test('popSearchPerson',   function(assert){
     testEntityType(assert, 'popSearchPerson', 'people', 'findPerson')
 })
@@ -172,5 +183,4 @@ test('popSearchOrganization',   function(assert){
 })
 test('popSearchTitle',   function(assert){
     testEntityType(assert, 'popSearchTitle','titles', 'findTitle');
-
 })

@@ -11,6 +11,28 @@ if ($ === undefined) {
     window.cwrcQuery = $
 }
 
+// custom styles
+let styleEl = document.createElement('style')
+styleEl.setAttribute('type', 'text/css')
+styleEl.appendChild(document.createTextNode(`
+.panel-heading a {
+    cursor: pointer;
+}
+.panel-heading a:after {
+    font-family:'Glyphicons Halflings';
+    content:"\\e114";
+    float: right;
+    color: grey;
+    cursor: pointer;
+}
+.panel-heading a.collapsed:after {
+    content:"\\e080";
+}
+.list-group a.list-group-item {
+    cursor: pointer;
+}
+`))
+document.querySelector('head').appendChild(styleEl)
 
 // entitySources is an object passed in by registerEntitySources that looks like:
 // where the value of each setter on the map is an imported module.
@@ -22,46 +44,62 @@ if ($ === undefined) {
     titles: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
 }
 */
-
 let entitySources;
 function registerEntitySources(sources) {
     entitySources = sources;
 }
 
+
+// data sent to initialize method
+let currentSearchOptions = {
+    entityType: undefined,
+    entityLookupMethodName: undefined,
+    entityLookupTitle: undefined,
+    searchOptions: undefined
+}
+// currently selected result
+let selectedResult = undefined
+
+
 function destroyModal() {
     let modal = $('#cwrc-entity-lookup');
     modal.modal('hide').data( 'bs.modal', null );
     modal[0].parentNode.removeChild(modal[0]);
+
+    if (popoverAnchor) {
+        popoverAnchor.popover('destroy')
+        popoverAnchor = null;
+    }
 }
 
-function returnResult(result, searchOptions) {
+function returnResult(result) {
     destroyModal()
-    searchOptions.success(result);
+    currentSearchOptions.success(result);
 }
 
-function cancel(searchOptions) {
+function cancel() {
     destroyModal()
-    if (searchOptions.cancel) searchOptions.cancel()
+    if (currentSearchOptions.cancel) currentSearchOptions.cancel()
 }
 
 function clearOldResults() {
+    selectedResult = undefined
     $('.cwrc-result-list').empty()
 }
 
-function find(searchOptions) {
+function find(query) {
     clearOldResults()
-    entitySources[searchOptions.entityType].forEach(
+    entitySources[currentSearchOptions.entityType].forEach(
         (entitySource, entitySourceName)=>{
-            entitySource[searchOptions.entityLookupMethodName](searchOptions.query).then(
-                (results)=>showResults(results, entitySourceName, searchOptions),
+            entitySource[currentSearchOptions.entityLookupMethodName](query).then(
+                (results)=>showResults(results, entitySourceName),
                 (error)=>console.log(`an error in the find: ${error}`))
         }
     )
 }
 
 
-var popoverAnchor = null;
-
+let popoverAnchor = null;
 function showPopover(result, li, ev) {
 
     ev.stopPropagation()
@@ -100,221 +138,222 @@ function showPopover(result, li, ev) {
     // add a check on the modal for a click event --> this will close the popover
     $('#cwrc-entity-lookup').on('click.popover', function(ev){
         // close popover
-        popoverAnchor.popover('destroy')
-        popoverAnchor = null;
+        if (popoverAnchor) {
+            popoverAnchor.popover('destroy')
+            popoverAnchor = null;
+        }
         // remove this click handler
         $('#cwrc-entity-lookup').off('.popover')
     })
 
 }
 
-function showResults(results, entitySourceName, searchOptions) {
-    let resultList = document.getElementById(`cwrc-${entitySourceName}-list`);
-    //<li class="list-group-item">One</li>
-    results.forEach((result, i)=>{
-        let li = document.createElement('li')
-        li.className = 'list-group-item cwrc-result-item'
+function showResults(results, entitySourceName) {
+    let resultList = $(`#cwrc-${entitySourceName}-list`);
+    if (results.length === 0) {
+        resultList.append('<a class="list-group-item">No results</a>')
+    } else {
+        results.forEach((result, i)=>{
+            let resultItem = result.description?
+                `<div><b>${result.name}</b> - <i>${result.description}</i></div>`:
+                `<div><b>${result.name}</b></div>`
 
-        let descDiv = document.createElement('div')
-        li.appendChild(descDiv)
-        descDiv.innerHTML=result.description?
-            `<b>${result.name}</b> - <i>${result.description}</i>`:
-            `<b>${result.name}</b>`
+            if (result.externalLink) {
+                resultItem += `<div><a href="${result.externalLink}" target="_blank">Open Full Description in New Window</a></div>`
+            }
 
-        if (result.externalLink) {
-            let linkDiv = document.createElement('div')
-            li.appendChild(linkDiv)
-            linkDiv.innerHTML =
-                `<a href="${result.externalLink}" target="_blank">Open Full Description in New Window</a>`
-        }
-
-        resultList.appendChild(li)
-
-        if (result.uriForDisplay) {
-            $(li).on('click', function (ev) {
-                showPopover(result, li, ev)
+            let aEl = $(`<a class="list-group-item cwrc-result-item">${resultItem}</a>`).appendTo(resultList)
+            $(aEl).on('click', function (ev) {
+                $('.cwrc-result-item', '.cwrc-result-panel').removeClass('active')
+                if (selectedResult === result) {
+                    selectedResult = undefined
+                } else {
+                    $(this).addClass('active')
+                    selectedResult = result
+                    if (result.uriForDisplay) {
+                        showPopover(result, aEl, ev)
+                    }
+                }
+                handleSelectButtonState()
             })
-        }
-        li.ondblclick = ()=>returnResult(result, searchOptions)
-    })
+        })
+    }
 }
 
-function initializeEntityPopup(searchOptions) {
+const panelDefs = [{
+    id: 'cwrc',
+    title: 'CWRC'
+},{
+    id: 'viaf',
+    title: 'VIAF'
+},{
+    id: 'dbpedia',
+    title: 'DBPedia'
+},{
+    id: 'geonames',
+    title: 'GeoNames'
+},{
+    id: 'geocode',
+    title: 'GeoCode'
+},{
+    id: 'getty',
+    title: 'Getty ULAN'
+},{
+    id: 'wikidata',
+    title: 'Wikidata'
+}]
+
+function initializeEntityPopup() {
     if (! document.getElementById('cwrc-entity-lookup') ) {
-        var el = searchOptions.parentEl || document.body;
-        $(el).append($.parseHTML(
-            `<div id="cwrc-entity-lookup" class="modal fade">
-                <div class="modal-dialog modal-lg ui-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h3 id="cwrc-entity-lookup-title" class="modal-title"></h3>
-                        </div>
-                        <form id="entity-search-form">
-                        <div class="modal-body">
-                            
-                            <div style="text-align:center;margin: 0 auto;padding-bottom: 2em" >
-                              <input type="text" placeholder="Enter a name to find" class="form-control" id="cwrc-entity-query"/>
-                            </div>
-                            <div style="width:100%">  
-                                <div style="display:inline-block;width:70%">
-                                
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-cwrc-panel">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse0">CWRC</a>
-                                                </h4>
-                                            </div>
-                                            <div id="collapse0" class="panel-collapse collapse in">
-                                                <ul class="list-group cwrc-result-list" id="cwrc-cwrc-list">
-                                                </ul>  
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-viaf-panel">
-                                        <div class="panel panel-default">
-                                          <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                              <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">VIAF</a>
-                                            </h4>
-                                          </div>
-                                          <div id="collapse1" class="panel-collapse collapse in">
-                                            <ul class="list-group cwrc-result-list" id="cwrc-viaf-list">
-                                            </ul>  
-                                          </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-dbpedia-panel">
-                                        <div class="panel panel-default">
-                                          <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                              <a data-toggle="collapse" href="#collapse2">DBPedia</a>
-                                            </h4>
-                                          </div>
-                                          <div id="collapse2" class="panel-collapse collapse in">
-                                            <ul class="list-group  cwrc-result-list" id="cwrc-dbpedia-list">
-                                            </ul>  
-                                          </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-geonames-panel">
-                                        <div class="panel panel-default">
-                                          <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                              <a data-toggle="collapse" href="#collapse3">GeoNames</a>
-                                            </h4>
-                                          </div>
-                                          <div id="collapse3" class="panel-collapse collapse in">
-                                            <ul class="list-group  cwrc-result-list" id="cwrc-geonames-list">
-                                            </ul>  
-                                          </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-geocode-panel">
-                                        <div class="panel panel-default">
-                                          <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                              <a data-toggle="collapse" href="#collapse4">GeoCode</a>
-                                            </h4>
-                                          </div>
-                                          <div id="collapse4" class="panel-collapse collapse in">
-                                            <ul class="list-group  cwrc-result-list" id="cwrc-geocode-list">
-                                            </ul>  
-                                          </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-getty-panel">
-                                        <div class="panel panel-default">
-                                          <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                              <a data-toggle="collapse" href="#collapse5">Getty ULAN</a>
-                                            </h4>
-                                          </div>
-                                          <div id="collapse5" class="panel-collapse collapse in">
-                                            <ul class="list-group  cwrc-result-list" id="cwrc-getty-list">
-                                            </ul>  
-                                          </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="panel-group cwrc-result-panel" id="cwrc-wikidata-panel">
-                                        <div class="panel panel-default">
-                                          <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                              <a data-toggle="collapse" href="#collapse6">Wikidata</a>
-                                            </h4>
-                                          </div>
-                                          <div id="collapse6" class="panel-collapse collapse in">
-                                            <ul class="list-group  cwrc-result-list" id="cwrc-wikidata-list">
-                                            </ul>  
-                                          </div>
-                                        </div>
-                                    </div>
-                               </div>
-                                <!--div style="display: inline-block; vertical-align:top; width:28%; padding-left:2em">
-                                    <div id="div-iframe" style="border-style: inset; border-color: grey; overflow: scroll; height:100%; width:100%"> 
-                                           <iframe align="top" id="cwrc-entity-info-frame" style="height:25em"  src="" sandbox="allow-same-origin"></iframe>
-                                    </div>
-                                </div-->
-                            </div>
-                        </div><!-- /.modal-body --> 
-                        <div class="modal-footer">
-                            <button id="cwrc-entity-lookup-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                            <button id="cwrc-entity-lookup-redo" type="submit" value="Submit"  class="btn btn-default">Search again.</button>
-                        </div><!-- /.modal-footer -->   
-                        </form>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            <!-- /.modal -->
+        let panels = ''
+        panelDefs.forEach((p, index) => {
+            panels += `
+            <div class="panel panel-default cwrc-result-panel" id="cwrc-${p.id}-panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-target="#collapse-${p.id}">${p.title}</a>
+                    </h4>
+                </div>
+                <div id="collapse-${p.id}" class="panel-collapse collapse in">
+                    <div class="list-group cwrc-result-list" id="cwrc-${p.id}-list">
+                    </div>
+                </div>
             </div>`
-        ));
-        $('#cwrc-entity-lookup button[data-dismiss="modal"]').on('click', ()=>cancel(searchOptions));
-        
-        $('#cwrc-entity-lookup-title').text(searchOptions.entityLookupTitle);
+        })
 
-        $('#entity-search-form').submit(function(event) {
-            event.preventDefault();
-            let newSearchOptions = Object.assign(
-                {},
-                searchOptions,
-                {query: $('#cwrc-entity-query').val()}
-            );
-            find(newSearchOptions);
+        var el = currentSearchOptions.parentEl || document.body;
+        $(el).append($.parseHTML(
+`<div id="cwrc-entity-lookup" role="dialog" class="modal fade">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 id="cwrc-entity-lookup-title" class="modal-title"></h3>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <input type="text" placeholder="Enter a name to find" class="form-control" id="cwrc-entity-query"/>
+                    <span class="input-group-btn">
+                        <button id="cwrc-entity-lookup-redo" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;
+                        </button>
+                    </span>
+                </div>
+                <div style="width:100%">
+                    <div class="panel-group">
+                        ${panels}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Other / Manual Input</h4>
+                            </div>
+                            <div class="panel-body">
+                                <input type="text" placeholder="Enter URL" class="form-control" id="cwrc-manual-input"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cwrc-entity-lookup-select" type="button" class="btn btn-default">Select</button>
+                <button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag without entity linking</button>
+                <!-- <button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create new</button> -->
+                <button id="cwrc-entity-lookup-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>`
+        ));
+        $('#cwrc-entity-lookup button[data-dismiss="modal"]').on('click', ()=>cancel());
+        
+        $('#cwrc-entity-lookup-title').text(currentSearchOptions.entityLookupTitle);
+
+        $('#cwrc-entity-query').keyup(function(event) {
+            if (event.which === 13) {
+                find($('#cwrc-entity-query').val());
+            }
+        })
+
+        $('#cwrc-entity-lookup-redo').click(function(event) {
+            find($('#cwrc-entity-query').val());
+        })
+
+        $('#cwrc-manual-input').keyup(function(event) {
+            $(this).parent().removeClass('has-error').find('span.help-block').remove()
+            handleSelectButtonState()
+        })
+
+        $('#cwrc-entity-lookup-select').click(function(event) {
+            if (selectedResult !== undefined) {
+                returnResult(selectedResult)
+            } else {
+                let manualInput = $('#cwrc-manual-input').val()
+                if (manualInput !== undefined && manualInput !== '') {
+                    // from https://gist.github.com/dperini/729294
+                    let urlRegex = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i
+                    if (urlRegex.test(manualInput)) {
+                        returnResult({
+                            id: manualInput,
+                            uri: manualInput,
+                            name: 'Custom Entry',
+                            repository: 'custom'
+                        })
+                    } else {
+                        if ($('#cwrc-manual-input').parent().hasClass('has-error') === false) {
+                            $('#cwrc-manual-input').parent().addClass('has-error').append('<span class="help-block">URL is not valid</span>')
+                        }
+                    }
+                }
+            }
+        })
+
+        $('#cwrc-entity-lookup-nolink').click(function(event) {
+            returnResult({})
         })
     }
     $('#cwrc-entity-lookup').modal('show');
     
-	if (searchOptions.parentEl) {
+	if (currentSearchOptions.parentEl) {
 		var data = $('#cwrc-entity-lookup').data('bs.modal');
-		data.$backdrop.detach().appendTo(searchOptions.parentEl);
+		data.$backdrop.detach().appendTo(currentSearchOptions.parentEl);
 	}
 }
 
-function layoutPanels(searchOptions) {
-    initializeEntityPopup(searchOptions);
+function handleSelectButtonState() {
+    let disable = true
+    if (selectedResult !== undefined) {
+        disable = false
+    } else {
+        let manualInput = $('#cwrc-manual-input').val()
+        if (manualInput !== undefined && manualInput !== '') {
+            disable = false
+        }
+    }
+    if (disable) {
+        $('#cwrc-entity-lookup-select').addClass('disabled').prop('disabled', true)
+    } else {
+        $('#cwrc-entity-lookup-select').removeClass('disabled').prop('disabled', false)
+    }
+}
+
+function layoutPanels() {
+    initializeEntityPopup();
+    handleSelectButtonState();
     // hide all panels
     $(".cwrc-result-panel").hide()
     // show panels registered for entity type
-    entitySources[searchOptions.entityType].forEach((entitySource, entitySourceName)=>$(`#cwrc-${entitySourceName}-panel`).show())
+    entitySources[currentSearchOptions.entityType].forEach((entitySource, entitySourceName)=>$(`#cwrc-${entitySourceName}-panel`).show())
 }
 
 function initialize(entityType, entityLookupMethodName, entityLookupTitle, searchOptions) {
-    // create a new object and assign a few new properties,
-    // We create the new object to avoid modifying the original object, i.e., avoid at least that side effect
-    let newSearchOptionsObject = Object.assign(
+    selectedResult = undefined
+    currentSearchOptions = Object.assign(
         {entityType: entityType, entityLookupMethodName: entityLookupMethodName, entityLookupTitle: entityLookupTitle},
         searchOptions
     )
-    layoutPanels(newSearchOptionsObject)
-    if (newSearchOptionsObject.query) {
-        document.getElementById('cwrc-entity-query').value = newSearchOptionsObject.query
-        find(newSearchOptionsObject)
+    layoutPanels()
+    if (currentSearchOptions.query) {
+        document.getElementById('cwrc-entity-query').value = currentSearchOptions.query
+        find(currentSearchOptions.query)
     }
 }
 
@@ -341,11 +380,11 @@ module.exports = {
     popSearchTitle: popSearchTitle,
 
     popSearch: {
-            person : popSearchPerson,
-            organization : popSearchOrganization,
-            place : popSearchPlace,
-            title : popSearchTitle
-        }
+        person : popSearchPerson,
+        organization : popSearchOrganization,
+        place : popSearchPlace,
+        title : popSearchTitle
+    }
 
 }
 
