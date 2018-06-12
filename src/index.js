@@ -49,6 +49,20 @@ function registerEntitySources(sources) {
     entitySources = sources;
 }
 
+let showCreateNewButton = true;
+function setShowCreateNewButton(value) {
+    if (typeof value === 'boolean') {
+        showCreateNewButton = value;
+    }
+}
+
+let showNoLinkButton = true;
+function setShowNoLinkButton(value) {
+    if (typeof value === 'boolean') {
+        showNoLinkButton = value;
+    }
+}
+
 
 // data sent to initialize method
 let currentSearchOptions = {
@@ -255,8 +269,10 @@ function initializeEntityPopup() {
             </div>
             <div class="modal-footer">
                 <button id="cwrc-entity-lookup-select" type="button" class="btn btn-default">Select</button>
-                <button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag without entity linking</button>
-                <!-- <button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create new</button> -->
+                ${showNoLinkButton ? 
+                '<button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag without entity linking</button>':''}
+                ${showCreateNewButton ?
+                '<button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create new</button>':''}
                 <button id="cwrc-entity-lookup-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -373,6 +389,9 @@ function popSearchTitle(searchOptions) {
 module.exports = {
     // registerEntitySources lets us more easily pass in mocks when testing.
     registerEntitySources: registerEntitySources,
+
+    showCreateNewButton: setShowCreateNewButton,
+    showNoLinkButton: setShowNoLinkButton,
 
     popSearchPerson: popSearchPerson,
     popSearchOrganization: popSearchOrganization,

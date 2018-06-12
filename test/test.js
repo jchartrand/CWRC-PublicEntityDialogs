@@ -184,3 +184,37 @@ test('popSearchOrganization',   function(assert){
 test('popSearchTitle',   function(assert){
     testEntityType(assert, 'popSearchTitle','titles', 'findTitle');
 })
+
+test('showNoLinkButton', async function(assert){
+    let dialogsCopy = require('../src/index.js')
+    let entitySources = getEntitySourceStubs();
+    let queryOptions = getQueryOptionsWithCallbackSpy();
+    dialogsCopy.registerEntitySources(entitySources)
+
+    dialogsCopy.showNoLinkButton(true)
+
+    await dialogsCopy.popSearchPerson(queryOptions);
+
+    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
+
+    assert.ok(isElementForIdVisible('cwrc-entity-lookup-nolink'), 'the no link button was shown')
+
+    assert.end()
+})
+
+test('showCreateNewButton', async function(assert){
+    let dialogsCopy = require('../src/index.js')
+    let entitySources = getEntitySourceStubs();
+    let queryOptions = getQueryOptionsWithCallbackSpy();
+    dialogsCopy.registerEntitySources(entitySources)
+
+    dialogsCopy.showCreateNewButton(true)
+
+    await dialogsCopy.popSearchPerson(queryOptions);
+
+    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
+
+    assert.ok(isElementForIdVisible('cwrc-entity-lookup-new'), 'the create new button was shown')
+
+    assert.end()
+})
