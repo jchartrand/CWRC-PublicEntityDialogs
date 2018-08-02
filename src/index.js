@@ -49,10 +49,22 @@ function registerEntitySources(sources) {
     entitySources = sources;
 }
 
+let entityFormsRoot = '';
+function setEntityFormsRoot(url) {
+    entityFormsRoot = url;
+}
+
 let showCreateNewButton = true;
 function setShowCreateNewButton(value) {
     if (typeof value === 'boolean') {
         showCreateNewButton = value;
+    }
+}
+
+let showEditButton = true;
+function setShowEditButton(value) {
+    if (typeof value === 'boolean') {
+        showEditButton = value;
     }
 }
 
@@ -189,6 +201,7 @@ function showResults(results, entitySourceName) {
                     }
                 }
                 handleSelectButtonState()
+                handleEditButtonState()
             })
         })
     }
@@ -271,6 +284,8 @@ function initializeEntityPopup() {
                 <button id="cwrc-entity-lookup-select" type="button" class="btn btn-default">Select</button>
                 ${showNoLinkButton ? 
                 '<button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag without entity linking</button>':''}
+                ${showEditButton ? 
+                '<button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default">Edit selected</button>':''}
                 ${showCreateNewButton ?
                 '<button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create new</button>':''}
                 <button id="cwrc-entity-lookup-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -296,6 +311,16 @@ function initializeEntityPopup() {
         $('#cwrc-manual-input').keyup(function(event) {
             $(this).parent().removeClass('has-error').find('span.help-block').remove()
             handleSelectButtonState()
+        })
+
+        $('#cwrc-entity-lookup-new').click(function(event) {
+            window.open(entityFormsRoot)
+        })
+
+        $('#cwrc-entity-lookup-edit').click(function(event) {
+            if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
+                window.open(entityFormsRoot+'?entityId='+selectedResult.id)
+            }
         })
 
         $('#cwrc-entity-lookup-select').click(function(event) {
@@ -351,9 +376,20 @@ function handleSelectButtonState() {
     }
 }
 
+function handleEditButtonState() {
+    if (showEditButton) {
+        if (selectedResult === undefined || selectedResult.repository !== 'CWRC') {
+            $('#cwrc-entity-lookup-edit').addClass('disabled').prop('disabled', true)
+        } else {
+            $('#cwrc-entity-lookup-edit').removeClass('disabled').prop('disabled', false)
+        }
+    }
+}
+
 function layoutPanels() {
     initializeEntityPopup();
     handleSelectButtonState();
+    handleEditButtonState();
     // hide all panels
     $(".cwrc-result-panel").hide()
     // show panels registered for entity type
@@ -392,6 +428,9 @@ module.exports = {
 
     showCreateNewButton: setShowCreateNewButton,
     showNoLinkButton: setShowNoLinkButton,
+    showEditButton: setShowEditButton,
+
+    setEntityFormsRoot: setEntityFormsRoot,
 
     popSearchPerson: popSearchPerson,
     popSearchOrganization: popSearchOrganization,

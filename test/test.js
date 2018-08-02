@@ -218,3 +218,20 @@ test('showCreateNewButton', async function(assert){
 
     assert.end()
 })
+
+test('showEditButton', async function(assert){
+    let dialogsCopy = require('../src/index.js')
+    let entitySources = getEntitySourceStubs();
+    let queryOptions = getQueryOptionsWithCallbackSpy();
+    dialogsCopy.registerEntitySources(entitySources)
+
+    dialogsCopy.showCreateNewButton(true)
+
+    await dialogsCopy.popSearchPerson(queryOptions);
+
+    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
+
+    assert.ok(isElementForIdVisible('cwrc-entity-lookup-edit'), 'the edit button was shown')
+
+    assert.end()
+})
