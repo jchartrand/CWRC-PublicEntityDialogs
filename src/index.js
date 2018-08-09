@@ -314,12 +314,12 @@ function initializeEntityPopup() {
         })
 
         $('#cwrc-entity-lookup-new').click(function(event) {
-            window.open(entityFormsRoot+'/'+currentSearchOptions.entityType)
+            window.open(entityFormsRoot+currentSearchOptions.entityType)
         })
 
         $('#cwrc-entity-lookup-edit').click(function(event) {
             if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
-                window.open(entityFormsRoot+'/'+currentSearchOptions.entityType+'?entityId='+selectedResult.id)
+                window.open(entityFormsRoot+currentSearchOptions.entityType+'?entityId='+selectedResult.id)
             }
         })
 
