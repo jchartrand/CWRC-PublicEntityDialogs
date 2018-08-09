@@ -12,10 +12,10 @@ let dbpedia = require('dbpedia-entity-lookup')
 let geonames = require('geonames-entity-lookup')
 
 dialogs.registerEntitySources({
-    people: (new Map()).set('viaf', viaf).set('wikidata', wikidata).set('getty',getty).set('dbpedia',dbpedia),
-    places: (new Map()).set('viaf', viaf).set('geonames', geonames).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf).set('dbpedia',dbpedia),
-    organizations: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
-    titles: (new Map()).set('viaf', viaf).set('dbpedia',  viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
+    person: (new Map()).set('viaf', viaf).set('wikidata', wikidata).set('getty',getty).set('dbpedia',dbpedia),
+    place: (new Map()).set('viaf', viaf).set('geonames', geonames).set('dbpedia', viaf).set('wikidata', wikidata).set('geocode',viaf).set('dbpedia',dbpedia),
+    organization: (new Map()).set('viaf', viaf).set('dbpedia', viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
+    title: (new Map()).set('viaf', viaf).set('dbpedia',  viaf).set('wikidata', wikidata).set('dbpedia',dbpedia),
 })
 
 let queryOptions = {

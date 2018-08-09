@@ -28,57 +28,57 @@ const fixtures = require('./fixtures/sourceData');
 function getGeonamesStubs() {
     return {
 
-        findPlace: sinon.stub().resolves(fixtures.geonames.places)
+        findPlace: sinon.stub().resolves(fixtures.geonames.place)
     }
 }
 
 function getViafStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.viaf.people),
-        findPlace: sinon.stub().resolves(fixtures.viaf.places),
-        findOrganization: sinon.stub().resolves(fixtures.viaf.organizations),
-        findTitle: sinon.stub().resolves(fixtures.viaf.titles)
+        findPerson: sinon.stub().resolves(fixtures.viaf.person),
+        findPlace: sinon.stub().resolves(fixtures.viaf.place),
+        findOrganization: sinon.stub().resolves(fixtures.viaf.organization),
+        findTitle: sinon.stub().resolves(fixtures.viaf.title)
     }
 }
 
 function getWikidataStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.wikidata.people),
-        findPlace: sinon.stub().resolves(fixtures.wikidata.places),
-        findOrganization:sinon.stub().resolves(fixtures.wikidata.organizations),
-        findTitle: sinon.stub().resolves(fixtures.wikidata.titles)
+        findPerson: sinon.stub().resolves(fixtures.wikidata.person),
+        findPlace: sinon.stub().resolves(fixtures.wikidata.place),
+        findOrganization:sinon.stub().resolves(fixtures.wikidata.organization),
+        findTitle: sinon.stub().resolves(fixtures.wikidata.title)
     }
 }
 
 function getGettyStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.getty.people),
-        findPlace: sinon.stub().resolves(fixtures.getty.places)
+        findPerson: sinon.stub().resolves(fixtures.getty.person),
+        findPlace: sinon.stub().resolves(fixtures.getty.place)
     }
 }
 
 
 function getDbpediaStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.dbpedia.people),
-        findPlace: sinon.stub().resolves(fixtures.dbpedia.places),
-        findOrganization:sinon.stub().resolves(fixtures.dbpedia.organizations),
-        findTitle: sinon.stub().resolves(fixtures.dbpedia.titles)
+        findPerson: sinon.stub().resolves(fixtures.dbpedia.person),
+        findPlace: sinon.stub().resolves(fixtures.dbpedia.place),
+        findOrganization:sinon.stub().resolves(fixtures.dbpedia.organization),
+        findTitle: sinon.stub().resolves(fixtures.dbpedia.title)
     }
 }
 
 
 function getEntitySourceStubs() {
     return {
-        people: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
-        places: (new Map()).set('geonames', getGeonamesStubs()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
-        organizations: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
-        titles: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+        person: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        place: (new Map()).set('geonames', getGeonamesStubs()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        organization: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+        title: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
     }
 }
 
 
-// test('popSearchPerson', (assert=>{testEntityType('people', popSearchPerson)}
+// test('popSearchPerson', (assert=>{testEntityType('person', popSearchPerson)}
 async function testEntityType(assert, methodToTest, entityType, entitySourceMethod) {
     // 'ASSEMBLE'
     // doesModalExist(assert)
@@ -173,16 +173,16 @@ function doesModalExist(assert) {
 
 
 test('popSearchPerson',   function(assert){
-    testEntityType(assert, 'popSearchPerson', 'people', 'findPerson')
+    testEntityType(assert, 'popSearchPerson', 'person', 'findPerson')
 })
 test('popSearchPlace',  function(assert){
-    testEntityType(assert, 'popSearchPlace','places', 'findPlace')
+    testEntityType(assert, 'popSearchPlace','place', 'findPlace')
 })
 test('popSearchOrganization',   function(assert){
-    testEntityType(assert, 'popSearchOrganization','organizations', 'findOrganization');
+    testEntityType(assert, 'popSearchOrganization','organization', 'findOrganization');
 })
 test('popSearchTitle',   function(assert){
-    testEntityType(assert, 'popSearchTitle','titles', 'findTitle');
+    testEntityType(assert, 'popSearchTitle','title', 'findTitle');
 })
 
 test('showNoLinkButton', async function(assert){

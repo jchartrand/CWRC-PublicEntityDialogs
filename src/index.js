@@ -38,10 +38,10 @@ document.querySelector('head').appendChild(styleEl)
 // where the value of each setter on the map is an imported module.
 /*
 {
-    people: (new Map()).set('cwrc', cwrc).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-    places: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-    organizations: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-    titles: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    person: (new Map()).set('cwrc', cwrc).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    place: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    organization: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
+    title: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
 }
 */
 let entitySources;
@@ -314,12 +314,12 @@ function initializeEntityPopup() {
         })
 
         $('#cwrc-entity-lookup-new').click(function(event) {
-            window.open(entityFormsRoot)
+            window.open(entityFormsRoot+'/'+currentSearchOptions.entityType)
         })
 
         $('#cwrc-entity-lookup-edit').click(function(event) {
             if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
-                window.open(entityFormsRoot+'?entityId='+selectedResult.id)
+                window.open(entityFormsRoot+'/'+currentSearchOptions.entityType+'?entityId='+selectedResult.id)
             }
         })
 
@@ -410,16 +410,16 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
 }
 
 function popSearchPerson(searchOptions) {
-    return initialize('people', 'findPerson', 'Find a Person', searchOptions)
+    return initialize('person', 'findPerson', 'Find a Person', searchOptions)
 }
 function popSearchPlace(searchOptions) {
-    return initialize('places', 'findPlace', 'Find a Place', searchOptions)
+    return initialize('place', 'findPlace', 'Find a Place', searchOptions)
 }
 function popSearchOrganization(searchOptions) {
-    return initialize('organizations', 'findOrganization', 'Find an Organization', searchOptions)
+    return initialize('organization', 'findOrganization', 'Find an Organization', searchOptions)
 }
 function popSearchTitle(searchOptions) {
-    return initialize('titles', 'findTitle', 'Find a Title', searchOptions)
+    return initialize('title', 'findTitle', 'Find a Title', searchOptions)
 }
 
 module.exports = {

@@ -4,27 +4,27 @@ const displayURI = "https://ohoh.pa"
 
 module.exports = {
     geonames: {
-        places: [
+        place: [
             {name: 'geonames-name-3', description: 'geonames-3', id: 'geonames-Id3', uri: testURI, uriForDisplay: displayURI  },
             {name: 'geonames-name-4', description: 'geonames-4', id: 'geonames-Id4', uri: anotherTestURI, uriForDisplay: displayURI },
             {name: 'geonames-name-5', description: 'geonames-5', id: 'geonames-Id5', uri: testURI, uriForDisplay: displayURI  }
         ]
     },
     viaf: {
-        people: [
+        person: [
             {name: 'viaf-name-1', description: 'viaf-1', id: 'viaf-Id', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-2', description: 'viaf-2', id: 'viaf-Id2', uri: testURI, uriForDisplay: displayURI  }
         ],
-            places: [
+        place: [
             {name: 'viaf-name-3', description: 'viaf-3', id: 'viaf-Id3', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-4', description: 'viaf-4', id: 'viaf-Id4', uri: anotherTestURI, uriForDisplay: displayURI },
             {name: 'viaf-name-5', description: 'viaf-5', id: 'viaf-Id5', uri: testURI, uriForDisplay: displayURI  }
         ],
-            organizations: [
+        organization: [
             {name: 'viaf-name-6', id: 'viaf-Id6', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-14', id: 'viaf-Id14', uri: testURI, uriForDisplay: displayURI  }
         ],
-            titles: [
+        title: [
             {name: 'viaf-name-7', description: 'viaf-7', id: 'viaf-Id7', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-8', description: 'viaf-8', id: 'viaf-Id8', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-9', id: 'viaf-Id9', uri: testURI, uriForDisplay: displayURI  },
@@ -34,18 +34,18 @@ module.exports = {
         ]
     },
     wikidata: {
-        people: [
+        person: [
             {name: 'wikidata-name1', description: 'wikidata-1description', id: 'wikidata-Id', uri: testURI, uriForDisplay: displayURI  },
             {name: 'wikidata-name2', id: 'wikidata-Id2', uri: testURI, uriForDisplay: displayURI  }
         ],
-            places: [
+        place: [
             {name: 'wikidata-name3', description: 'wikidata-description3', id: 'wikidata-Id3', uri: testURI , uriForDisplay: displayURI },
             {name: 'wikidata-name4',  id: 'wikidata-Id4', uri: anotherTestURI, uriForDisplay: displayURI }
         ],
-            organizations: [
+        organization: [
             {name: 'wikidata-name6', description: 'wikidata-description6', id: 'wikidata-Id6', uri: testURI, uriForDisplay: displayURI  }
         ],
-            titles: [
+        title: [
             {name: 'wikidata-name7', description: 'wikidata-description7', id: 'wikidata-Id7', uri: testURI, uriForDisplay: displayURI  },
             {name: 'wikidata-name8', description: 'wikidata-description8', id: 'wikidata-Id8', uri: testURI, uriForDisplay: displayURI  },
             {name: 'wikidata-name9', description: 'wikidata-description9', id: 'wikidata-Id9', uri: testURI, uriForDisplay: displayURI  },
@@ -53,30 +53,30 @@ module.exports = {
         ]
     },
     getty: {
-        people: [
+        person: [
             {name: 'getty-name1', description: 'getty-description1', id: 'getty-Id', uri: testURI, uriForDisplay: displayURI  },
             {name: 'getty-name2', description: 'getty-description2', id: 'getty-Id2', uri: testURI, uriForDisplay: displayURI  }
         ],
-            places: [
+        place: [
             {name: 'getty-name3',  id: 'getty-Id3', uri: testURI, uriForDisplay: displayURI  }
         ]
     },
     dbpedia: {
-        people: [
+        person: [
             {name: 'dbpedia-name1', description: 'dbpedia-1description', id: 'dbpedia-Id', uri: testURI, uriForDisplay: displayURI },
             {name: 'dbpedia-name2', id: 'dbpedia-Id2', uri: testURI, uriForDisplay: displayURI  }
         ],
-        places: [
+        place: [
             {name: 'dbpedia-name3', description: 'dbpedia-description3', id: 'dbpedia-Id3', uri: testURI, uriForDisplay: displayURI  },
             {name: 'dbpedia-name4',  id: 'dbpedia-Id4', uri: anotherTestURI, uriForDisplay: displayURI }
         ],
-        organizations: [
+        organization: [
             {name: 'dbpedia-name6', description: 'dbpedia-description6', id: 'dbpedia-Id6', uri: testURI, uriForDisplay: displayURI  },
             {name: 'dbpedia-name13', description: 'dbpedia-description18', id: 'dbpedia-Id55', uri: testURI, uriForDisplay: displayURI  },
             {name: 'dbpedia-name66', description: 'dbpedia-description66', id: 'dbpedia-Id66', uri: testURI, uriForDisplay: displayURI  }
 
         ],
-        titles: [
+        title: [
             {name: 'dbpedia-name7', description: 'dbpedia-description7', id: 'dbpedia-Id7', uri: testURI, uriForDisplay: displayURI  },
             {name: 'dbpedia-name8', description: 'dbpedia-description8', id: 'dbpedia-Id8', uri: testURI, uriForDisplay: displayURI  },
             {name: 'dbpedia-name9', description: 'dbpedia-description9', id: 'dbpedia-Id9', uri: testURI , uriForDisplay: displayURI },
