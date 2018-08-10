@@ -11,6 +11,9 @@ if ($ === undefined) {
     window.cwrcQuery = $
 }
 
+const BroadcastChannel = require('broadcast-channel')
+let channel
+
 // custom styles
 let styleEl = document.createElement('style')
 styleEl.setAttribute('type', 'text/css')
@@ -88,6 +91,10 @@ let selectedResult = undefined
 
 
 function destroyModal() {
+    if (channel) {
+        channel.close()
+    }
+    
     let modal = $('#cwrc-entity-lookup');
     modal.modal('hide').data( 'bs.modal', null );
     modal[0].parentNode.removeChild(modal[0]);
@@ -397,6 +404,16 @@ function layoutPanels() {
 }
 
 function initialize(entityType, entityLookupMethodName, entityLookupTitle, searchOptions) {
+    channel = new BroadcastChannel('cwrc-entity-management-forms')
+    channel.onmessage = (id) => {
+        const uri = entitySources[currentSearchOptions.entityType].cwrc.getEntityRoot()+'/'+id
+        returnResult({
+            id,
+            uri,
+            repository: 'cwrc'
+        })
+    }
+
     selectedResult = undefined
     currentSearchOptions = Object.assign(
         {entityType: entityType, entityLookupMethodName: entityLookupMethodName, entityLookupTitle: entityLookupTitle},
