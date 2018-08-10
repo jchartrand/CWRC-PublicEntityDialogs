@@ -13,6 +13,7 @@ if ($ === undefined) {
 
 const BroadcastChannel = require('broadcast-channel')
 let channel
+let entityFormWindow
 
 // custom styles
 let styleEl = document.createElement('style')
@@ -321,12 +322,12 @@ function initializeEntityPopup() {
         })
 
         $('#cwrc-entity-lookup-new').click(function(event) {
-            window.open(entityFormsRoot+currentSearchOptions.entityType)
+            entityFormWindow = window.open(entityFormsRoot+currentSearchOptions.entityType)
         })
 
         $('#cwrc-entity-lookup-edit').click(function(event) {
             if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
-                window.open(entityFormsRoot+currentSearchOptions.entityType+'?entityId='+selectedResult.id)
+                entityFormWindow = window.open(entityFormsRoot+currentSearchOptions.entityType+'?entityId='+selectedResult.id)
             }
         })
 
@@ -412,6 +413,7 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
             uri,
             repository: 'cwrc'
         })
+        entityFormWindow.close()
     }
 
     selectedResult = undefined
