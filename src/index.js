@@ -17,6 +17,7 @@ if (BroadcastChannel.default !== undefined) {
 }
 let channel
 let entityFormWindow
+let entityFormWindowOptions = 'menubar=no,statusbar=no,toolbar=no'
 
 // custom styles
 let styleEl = document.createElement('style')
@@ -325,12 +326,12 @@ function initializeEntityPopup() {
         })
 
         $('#cwrc-entity-lookup-new').click(function(event) {
-            entityFormWindow = window.open(entityFormsRoot+currentSearchOptions.entityType)
+            openEntityFormWindow(false)
         })
 
         $('#cwrc-entity-lookup-edit').click(function(event) {
             if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
-                entityFormWindow = window.open(entityFormsRoot+currentSearchOptions.entityType+'?entityId='+selectedResult.id)
+                openEntityFormWindow(true)
             }
         })
 
@@ -368,6 +369,18 @@ function initializeEntityPopup() {
 		var data = $('#cwrc-entity-lookup').data('bs.modal');
 		data.$backdrop.detach().appendTo(currentSearchOptions.parentEl);
 	}
+}
+
+function openEntityFormWindow(isEdit) {
+    let url = entityFormsRoot + currentSearchOptions.entityType
+    if (isEdit) {
+        url += '?entityId=' + selectedResult.id
+    }
+    let width = Math.min(1100, window.outerWidth * 0.8)
+    let height = window.outerHeight * 0.8
+    let top = (window.outerHeight - height) * 0.5
+    let left = (window.outerWidth - width) * 0.5
+    entityFormWindow = window.open(url, 'entityFormWindow', entityFormWindowOptions+',width='+width+',height='+height+',top='+top+',left='+left)
 }
 
 function handleSelectButtonState() {
