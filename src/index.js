@@ -104,6 +104,12 @@ function destroyModal() {
     modal.modal('hide').data( 'bs.modal', null );
     modal[0].parentNode.removeChild(modal[0]);
 
+    destroyPopover();
+}
+
+function destroyPopover() {
+    $('#cwrc-entity-lookup').off('.popover')
+    $('#entity-iframe').off('load')
     if (popoverAnchor) {
         popoverAnchor.popover('destroy')
         popoverAnchor = null;
@@ -146,44 +152,43 @@ function showPopover(result, li, ev) {
         if (popoverAnchor[0] === li) {
             return  // we've already got a popup for this list item, so just return
         } else {
-            popoverAnchor.popover('destroy')
-            popoverAnchor = null;
-            // have to remove the old click handler on the modal, which would have been bound to the old popover,
-            // which now doesn't exist anymore, and so would try to destroy a non-existant popover, causing an
-            // exception
-            $('#cwrc-entity-lookup').off('.popover')
-
+            destroyPopover();
+            // need to delay show until destroy method finishes hiding the previous popover (default hide time is 150 ms)
+            setTimeout(doShow, 175);
         }
+    } else {
+        doShow();
     }
 
-    popoverAnchor = $(li);
+    function doShow() {
+        popoverAnchor = $(li);
 
-    popoverAnchor.popover({
-        // delay: { "show": 600, "hide": 100 },
-        animation: true,
-        trigger: "manual",
-        //placement: "auto",
-        html: true,
-        title: result.name,
-        content: ()=>`<iframe id="entity-iframe" src="${result.uriForDisplay}" style="border:none;height:40em;width:38em"/>`
-    })
+        popoverAnchor.popover({
+            // delay: { "show": 600, "hide": 100 },
+            animation: true,
+            trigger: "manual",
+            //placement: "auto",
+            html: true,
+            title: result.name,
+            content: ()=>`<div id="entity-iframe-loading" style="width:38em">Loading...</div><iframe id="entity-iframe" src="${result.uriForDisplay}" style="display:none;border:none;height:40em;width:38em"/>`
+        })
 
-    popoverAnchor.popover('show')
+        popoverAnchor.popover('show')
 
-    // resize the popover
-    popoverAnchor.data("bs.popover").tip().css({"max-width": "40em"})
+        $('#entity-iframe').on('load', function(ev) {
+            $('#entity-iframe-loading').hide();
+            $('#entity-iframe').show();
+        });
 
-    // add a check on the modal for a click event --> this will close the popover
-    $('#cwrc-entity-lookup').on('click.popover', function(ev){
-        // close popover
-        if (popoverAnchor) {
-            popoverAnchor.popover('destroy')
-            popoverAnchor = null;
-        }
-        // remove this click handler
-        $('#cwrc-entity-lookup').off('.popover')
-    })
+        // resize the popover
+        popoverAnchor.data("bs.popover").tip().css({"max-width": "40em"})
 
+        // add a check on the modal for a click event --> this will close the popover
+        $('#cwrc-entity-lookup').on('click.popover', function(ev){
+            // close popover
+            destroyPopover()
+        })
+    }
 }
 
 function showResults(results, entitySourceName) {
