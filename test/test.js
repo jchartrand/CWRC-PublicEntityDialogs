@@ -133,7 +133,7 @@ function testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult )
 
     // ASSERT
     let iframe = document.getElementById("entity-iframe");
-    assert.ok(isElementVisible(iframe), 'the iframe was shown');
+    assert.ok(doesElementExist(iframe), 'the iframe exists');
     assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay), 'the iframe src was set to the correct url')
     // xhr.restore();
     // await new Promise(resolve => setTimeout(resolve, 50));
@@ -165,6 +165,12 @@ function isElementHidden(element) {
 function isElementVisible(element) {
     //return ! isElementHidden(element)
     return $(element).is(':visible')
+}
+function doesElementForIdExist(elementId) {
+    return doesElementExist(document.getElementById(elementId))
+}
+function doesElementExist(element) {
+    return $(element).length == 1;
 }
 function doesModalExist(assert) {
     let b = new Boolean(document.getElementById('cwrc-entity-lookup') !== null)
