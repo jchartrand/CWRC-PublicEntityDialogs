@@ -62,6 +62,11 @@ function setEntityFormsRoot(url) {
     entityFormsRoot = url;
 }
 
+let collectionsRoot = '';
+function setCollectionsRoot(url) {
+    collectionsRoot = url;
+}
+
 let showCreateNewButton = true;
 function setShowCreateNewButton(value) {
     if (typeof value === 'boolean') {
@@ -95,16 +100,22 @@ let currentSearchOptions = {
 let selectedResult = undefined
 
 
-function destroyModal() {
-    if (channel) {
-        channel.close()
+function destroyModal(modalId) {
+    if (modalId === undefined) {
+        destroyModal('cwrc-entity-lookup')
+        destroyModal('cwrc-title-entity-dialog')
+    } else {
+        let modal = $('#'+modalId);
+        modal.modal('hide').data( 'bs.modal', null );
+        modal[0].parentNode.removeChild(modal[0]);
+
+        if (modalId === 'cwrc-entity-lookup') {
+            if (channel) {
+                channel.close()
+            }
+            destroyPopover();
+        }
     }
-
-    let modal = $('#cwrc-entity-lookup');
-    modal.modal('hide').data( 'bs.modal', null );
-    modal[0].parentNode.removeChild(modal[0]);
-
-    destroyPopover();
 }
 
 function destroyPopover() {
@@ -309,6 +320,23 @@ function initializeEntityPopup() {
             </div>
         </div>
     </div>
+</div>
+<div id="cwrc-title-entity-dialog" role="dialog" class="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="cwrc-entity-lookup-title" class="modal-title">Create a new entity</h3>
+            </div>
+            <div class="modal-body">
+                <p>A new window will open, where you can navigate to the desired collection and create the new entity (a citation object).</p>
+                <p>Once you're done, return to the current window and re-run the title search. The new entity you created will show up in the results and you will be able to tag it.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cwrc-title-entity-dialog-ok" type="button" class="btn btn-default">Ok</button>
+                <button id="cwrc-title-entity-dialog-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
 </div>`
         ));
         $('#cwrc-entity-lookup button[data-dismiss="modal"]').on('click', ()=>cancel());
@@ -331,11 +359,19 @@ function initializeEntityPopup() {
         })
 
         $('#cwrc-entity-lookup-new').click(function(event) {
-            openEntityFormWindow(false)
+            if (currentSearchOptions.entityType === 'title') {
+                $('#cwrc-entity-lookup').modal('hide')
+                doShowModal('cwrc-title-entity-dialog')
+            } else {
+                openEntityFormWindow(false)
+            }
         })
 
         $('#cwrc-entity-lookup-edit').click(function(event) {
-            if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
+            if (currentSearchOptions.entityType === 'title') {
+                $('#cwrc-entity-lookup').modal('hide')
+                doShowModal('cwrc-title-entity-dialog')
+            } else if (selectedResult !== undefined && selectedResult.repository === 'CWRC') {
                 openEntityFormWindow(true)
             }
         })
@@ -367,19 +403,39 @@ function initializeEntityPopup() {
         $('#cwrc-entity-lookup-nolink').click(function(event) {
             returnResult({})
         })
+
+        $('#cwrc-title-entity-dialog-ok').click(function(event) {
+            openEntityFormWindow()
+            $('#cwrc-title-entity-dialog').modal('hide')
+            doShowModal('cwrc-entity-lookup')
+        })
+        $('#cwrc-title-entity-dialog button[data-dismiss="modal"]').click(function(event) {
+            $('#cwrc-title-entity-dialog').modal('hide')
+            doShowModal('cwrc-entity-lookup')
+        })
+
     }
-    $('#cwrc-entity-lookup').modal('show');
+    doShowModal('cwrc-entity-lookup')
+}
+
+function doShowModal(modalId) {
+    $('#'+modalId).modal('show');
     
 	if (currentSearchOptions.parentEl) {
-		var data = $('#cwrc-entity-lookup').data('bs.modal');
+		var data = $('#'+modalId).data('bs.modal');
 		data.$backdrop.detach().appendTo(currentSearchOptions.parentEl);
 	}
 }
 
 function openEntityFormWindow(isEdit) {
-    let url = entityFormsRoot + currentSearchOptions.entityType
-    if (isEdit) {
-        url += '?entityId=' + selectedResult.id
+    let url
+    if (currentSearchOptions.entityType === 'title') {
+        url = collectionsRoot
+    } else {
+        url = entityFormsRoot + currentSearchOptions.entityType
+        if (isEdit) {
+            url += '?entityId=' + selectedResult.id
+        }
     }
     let width = Math.min(1100, window.outerWidth * 0.8)
     let height = window.outerHeight * 0.8
@@ -471,6 +527,7 @@ module.exports = {
     showEditButton: setShowEditButton,
 
     setEntityFormsRoot: setEntityFormsRoot,
+    setCollectionsRoot: setCollectionsRoot,
 
     popSearchPerson: popSearchPerson,
     popSearchOrganization: popSearchOrganization,
