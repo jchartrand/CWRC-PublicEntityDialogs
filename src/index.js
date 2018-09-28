@@ -36,8 +36,27 @@ styleEl.appendChild(document.createTextNode(`
 .panel-heading a.collapsed:after {
     content:"\\e080";
 }
-.list-group a.list-group-item {
+.list-group .list-group-item {
     cursor: pointer;
+}
+.list-group .list-group-item:hover {
+    color: #555;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+.list-group .list-group-item.active a {
+    color: #fff;
+}
+.list-group-item .logo {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    top: -7.5px;
+    float: right;
+    vertical-align: middle;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 `))
 document.querySelector('head').appendChild(styleEl)
@@ -205,7 +224,7 @@ function showPopover(result, li, ev) {
 function showResults(results, entitySourceName) {
     let resultList = $(`#cwrc-${entitySourceName}-list`);
     if (results.length === 0) {
-        resultList.append('<a class="list-group-item">No results</a>')
+        resultList.append('<li class="list-group-item">No results</li>')
     } else {
         results.forEach((result, i)=>{
             let resultItem = result.description?
@@ -213,10 +232,10 @@ function showResults(results, entitySourceName) {
                 `<div><b>${result.name}</b></div>`
 
             if (result.externalLink) {
-                resultItem += `<div><a href="${result.externalLink}" target="_blank">Open Full Description in New Window</a></div>`
+                resultItem += `<div><a href="${result.externalLink}" target="_blank">Open full description in new window</a></div>`
             }
 
-            let aEl = $(`<a class="list-group-item cwrc-result-item">${resultItem}</a>`).appendTo(resultList)
+            let aEl = $(`<li class="list-group-item cwrc-result-item">${resultItem}</li>`).appendTo(resultList)
             $(aEl).on('click', function (ev) {
                 $('.cwrc-result-item', '.cwrc-result-panel').removeClass('active')
                 if (selectedResult === result) {
@@ -270,8 +289,8 @@ function initializeEntityPopup() {
                     </h4>
                 </div>
                 <div id="collapse-${p.id}" class="panel-collapse collapse in">
-                    <div class="list-group cwrc-result-list" id="cwrc-${p.id}-list">
-                    </div>
+                    <ul class="list-group cwrc-result-list" id="cwrc-${p.id}-list">
+                    </ul>
                 </div>
             </div>`
         })
