@@ -104,7 +104,7 @@ async function testEntityType(assert, methodToTest, entityType, entitySourceMeth
     assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
 
     const fixtureForSelectedResult = fixtures.viaf[entityType][1]
-    const elementForSelectedResult = document.getElementById('cwrc-viaf-list').querySelectorAll('a')[1];
+    const elementForSelectedResult = document.getElementById('cwrc-viaf-list').querySelectorAll('li')[1];
 
     // assert.comment('list visible: '+document.getElementById('cwrc-viaf-list').outerHTML)
     // assert.comment('selected el: '+elementForSelectedResult.outerHTML)
@@ -116,7 +116,7 @@ async function testEntityType(assert, methodToTest, entityType, entitySourceMeth
 }
 
 function confirmShownTextMatchesFixtureTest(entitySourceName, entityType, assert) {
-    document.getElementById(`cwrc-${entitySourceName}-list`).querySelectorAll('a').forEach((result, index) => {
+    document.getElementById(`cwrc-${entitySourceName}-list`).querySelectorAll('li').forEach((result, index) => {
         let fixtureResult = fixtures[entitySourceName][entityType][index];
         let textThatWasShown = result.getElementsByTagName('div')[0].textContent
         let textThatShouldHaveBeenShown = fixtureResult.description ?
