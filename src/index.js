@@ -52,7 +52,7 @@ styleEl.appendChild(document.createTextNode(`
     width: 30px;
     height: 30px;
     position: relative;
-    top: -7.5px;
+    top: -23.5px;
     float: right;
     vertical-align: middle;
     background-size: cover;
@@ -233,6 +233,9 @@ function showResults(results, entitySourceName) {
 
             if (result.externalLink) {
                 resultItem += `<div><a href="${result.externalLink}" target="_blank">Open full description in new window</a></div>`
+            }
+            if (result.logo) {
+                resultItem += `<div class="logo" style="background-image: url(${result.logo})"></div>`
             }
 
             let aEl = $(`<li class="list-group-item cwrc-result-item">${resultItem}</li>`).appendTo(resultList)
