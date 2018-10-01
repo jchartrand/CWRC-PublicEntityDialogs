@@ -38,6 +38,7 @@ styleEl.appendChild(document.createTextNode(`
 }
 .list-group .list-group-item {
     cursor: pointer;
+    float: none !important; /* islandora css conflict */
 }
 .list-group .list-group-item:hover {
     color: #555;
