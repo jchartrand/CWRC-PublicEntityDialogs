@@ -508,7 +508,7 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
     channel = new BroadcastChannel('cwrc-entity-management-forms')
     channel.onmessage = (id) => {
         if (id === undefined) {
-            // add/edit failed so do nothing
+            // add/edit failed so don't return result
         } else {
             const uri = entitySources[currentSearchOptions.entityType].get('cwrc').getEntityRoot()+'/'+id
             returnResult({
@@ -516,8 +516,8 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
                 uri,
                 repository: 'cwrc'
             })
-            entityFormWindow.close()
         }
+        entityFormWindow.close() // always close window
     }
 
     selectedResult = undefined
