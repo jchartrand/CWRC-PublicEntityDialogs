@@ -507,13 +507,17 @@ function layoutPanels() {
 function initialize(entityType, entityLookupMethodName, entityLookupTitle, searchOptions) {
     channel = new BroadcastChannel('cwrc-entity-management-forms')
     channel.onmessage = (id) => {
-        const uri = entitySources[currentSearchOptions.entityType].get('cwrc').getEntityRoot()+'/'+id
-        returnResult({
-            id,
-            uri,
-            repository: 'cwrc'
-        })
-        entityFormWindow.close()
+        if (id === undefined) {
+            // add/edit failed so do nothing
+        } else {
+            const uri = entitySources[currentSearchOptions.entityType].get('cwrc').getEntityRoot()+'/'+id
+            returnResult({
+                id,
+                uri,
+                repository: 'cwrc'
+            })
+            entityFormWindow.close()
+        }
     }
 
     selectedResult = undefined
