@@ -168,7 +168,7 @@ function find(query) {
         (entitySource, entitySourceName)=>{
             entitySource[currentSearchOptions.entityLookupMethodName](query).then(
                 (results)=>showResults(results, entitySourceName),
-                (error)=>console.log(`an error in the find: ${error}`))
+                (error)=>showError(error, entitySourceName))
         }
     )
 }
@@ -256,6 +256,11 @@ function showResults(results, entitySourceName) {
             })
         })
     }
+}
+
+function showError(error, entitySourceName) {
+    let resultList = $(`#cwrc-${entitySourceName}-list`);
+    resultList.append(`<li class="list-group-item list-group-item-danger">${error}</li>`)
 }
 
 const panelDefs = [{
