@@ -239,8 +239,8 @@ function showResults(results, entitySourceName) {
                 resultItem += `<div class="logo" style="background-image: url(${result.logo})"></div>`
             }
 
-            let aEl = $(`<li class="list-group-item cwrc-result-item">${resultItem}</li>`).appendTo(resultList)
-            $(aEl).on('click', function (ev) {
+            let liEl = $(`<li class="list-group-item cwrc-result-item">${resultItem}</li>`).appendTo(resultList)
+            $(liEl).on('click', function (ev) {
                 $('.cwrc-result-item', '.cwrc-result-panel').removeClass('active')
                 if (selectedResult === result) {
                     selectedResult = undefined
@@ -248,11 +248,14 @@ function showResults(results, entitySourceName) {
                     $(this).addClass('active')
                     selectedResult = result
                     if (result.uriForDisplay) {
-                        showPopover(result, aEl, ev)
+                        showPopover(result, liEl, ev)
                     }
                 }
                 handleSelectButtonState()
                 handleEditButtonState()
+            })
+            $(liEl).on('dblclick', function (ev) {
+                returnResult(result)
             })
         })
     }
