@@ -19,6 +19,8 @@ let channel
 let entityFormWindow
 let entityFormWindowOptions = 'menubar=no,statusbar=no,toolbar=no'
 
+let Cookies = require('js-cookie')
+
 // custom styles
 let styleEl = document.createElement('style')
 styleEl.setAttribute('type', 'text/css')
@@ -108,6 +110,10 @@ function setShowNoLinkButton(value) {
     }
 }
 
+// used to check if the user has selected what lookup sources they want to use
+// selections get stored in a cookie
+let haveSourcesBeenSelected = false;
+const SOURCES_COOKIE_NAME = 'cwrc-public-entity-dialogs-lookup-sources';
 
 // data sent to initialize method
 let currentSearchOptions = {
@@ -138,15 +144,6 @@ function destroyModal(modalId) {
     }
 }
 
-function destroyPopover() {
-    $('#cwrc-entity-lookup').off('.popover')
-    $('#entity-iframe').off('load')
-    if (popoverAnchor) {
-        popoverAnchor.popover('destroy')
-        popoverAnchor = null;
-    }
-}
-
 function returnResult(result) {
     destroyModal()
     currentSearchOptions.success(result);
@@ -162,21 +159,35 @@ function clearOldResults() {
     $('.cwrc-result-list').empty()
 }
 
+function rerunSearch() {
+    find($('#cwrc-entity-query').val());
+}
+
 function find(query) {
     clearOldResults()
     entitySources[currentSearchOptions.entityType].forEach(
         (entitySource, entitySourceName)=>{
-            entitySource[currentSearchOptions.entityLookupMethodName](query).then(
-                (results)=>showResults(results, entitySourceName),
-                (error)=>showError(error, entitySourceName))
+            if (isSourceEnabled(entitySourceName)) {
+                entitySource[currentSearchOptions.entityLookupMethodName](query).then(
+                    (results)=>showResults(results, entitySourceName),
+                    (error)=>showError(error, entitySourceName)
+                )
+            }
         }
     )
 }
 
+function destroyPopover() {
+    $('#cwrc-entity-lookup').off('.popover')
+    $('#entity-iframe').off('load')
+    if (popoverAnchor) {
+        popoverAnchor.popover('destroy')
+        popoverAnchor = null;
+    }
+}
 
 let popoverAnchor = null;
 function showPopover(result, li, ev) {
-
     ev.stopPropagation()
 
     if (popoverAnchor) {
@@ -201,7 +212,8 @@ function showPopover(result, li, ev) {
             //placement: "auto",
             html: true,
             title: result.name,
-            content: ()=>`<div id="entity-iframe-loading" style="width:38em">Loading...</div><iframe id="entity-iframe" src="${result.uriForDisplay}" style="display:none;border:none;height:40em;width:38em"/>`
+            content: ()=>`<div id="entity-iframe-loading" style="width:38em">Loading...</div>
+            <iframe id="entity-iframe" src="${result.uriForDisplay}" style="display:none;border:none;height:40em;width:38em"/>`
         })
 
         popoverAnchor.popover('show')
@@ -266,42 +278,130 @@ function showError(error, entitySourceName) {
     resultList.append(`<li class="list-group-item list-group-item-danger">${error}</li>`)
 }
 
-const panelDefs = [{
-    id: 'cwrc',
-    title: 'CWRC'
-},{
-    id: 'viaf',
-    title: 'VIAF'
-},{
-    id: 'dbpedia',
-    title: 'DBPedia'
-},{
-    id: 'geonames',
-    title: 'GeoNames'
-},{
-    id: 'geocode',
-    title: 'GeoCode'
-},{
-    id: 'getty',
-    title: 'Getty ULAN'
-},{
-    id: 'wikidata',
-    title: 'Wikidata'
-}]
+const lookupSourceMetadata = {
+    'cwrc': {
+        title: 'CWRC',
+        enabled: true
+    },
+    'viaf': {
+        title: 'VIAF',
+        enabled: true
+    },
+    'dbpedia': {
+        title: 'DBPedia',
+        enabled: true
+    },
+    'geonames': {
+        title: 'GeoNames',
+        enabled: true
+    },
+    'getty': {
+        title: 'Getty ULAN',
+        enabled: true
+    },
+    'wikidata': {
+        title: 'Wikidata',
+        enabled: true
+    }
+}
 
-function initializeEntityPopup() {
+function setSourceEnabled(source, enabled) {
+    if (lookupSourceMetadata[source]) {
+        lookupSourceMetadata[source].enabled = enabled;
+    }
+}
+
+function isSourceEnabled(source) {
+    let entry = lookupSourceMetadata[source];
+    let enabled = entry.enabled === undefined ? true : entry.enabled;
+    return enabled;
+}
+
+function getSelectSourcesForm() {
+    let sourceTypes = {};
+    for (let type in entitySources) {
+        entitySources[type].forEach(
+            (entitySource, entitySourceName)=>{
+                if (sourceTypes[entitySourceName] === undefined) {
+                    sourceTypes[entitySourceName] = [];
+                }
+                sourceTypes[entitySourceName].push(type);
+            }
+        )
+    }
+    let sourceCheckboxes = '';
+    for (let source in sourceTypes) {
+        let types = sourceTypes[source];
+        let label = lookupSourceMetadata[source].title;
+        let enabled = lookupSourceMetadata[source].enabled;
+        sourceCheckboxes += `
+        <div class="checkbox">
+            <label><input type="checkbox" ${enabled ? 'checked' : ''} data-source="${source}"/>${label}<br/><span class="small">${types.join(', ')}</span></label>
+        </div>`
+    }
+    return sourceCheckboxes;
+}
+
+function saveSourcesForm($inputs) {
+    let sourceJSON = {};
+    $inputs.each((index, el)=>{
+        let source = $(el).data('source');
+        let value = $(el).prop('checked');
+        sourceJSON[source] = value;
+        setSourceEnabled(source, value);
+    });
+    haveSourcesBeenSelected = true;
+    Cookies.set(SOURCES_COOKIE_NAME, sourceJSON, {expires: 93, path: ''}); // expires after approximately 3 months
+}
+
+function showSourcesPopover(anchor) {
+    function handleSelectSourcesButton() {
+        saveSourcesForm(anchor.data('bs.popover').tip().find('input[type=checkbox]'));
+        showSourcePanels();
+        rerunSearch();
+        anchor.popover('hide');
+    }
+
+    let hasPopover = anchor.data('bs.popover') !== undefined;
+    if (!hasPopover) {
+        anchor.popover({
+            animation: true,
+            trigger: 'manual',
+            placement: 'bottom',
+            html: true,
+            title: 'Select sources',
+            content: ()=>`${getSelectSourcesForm()}<button class="btn btn-default" type="submit">Use selected</button>`
+        })
+        anchor.on('hide.bs.popover', ()=>{
+            anchor.data('bs.popover').tip().find('button[type=submit]').off('click', handleSelectSourcesButton);
+        })
+    }
+
+    if (anchor.data('bs.popover').tip().is(':visible')) {
+        return;
+    } else {
+        anchor.popover('show')
+        anchor.data('bs.popover').tip().css({'min-width': '230px'})
+        anchor.popover('show') // need to show again after setting width in order to have correct positioning
+        anchor.data('bs.popover').tip().find('button[type=submit]').on('click', handleSelectSourcesButton) // need to add event handling after showing for 2nd time
+    }
+}
+
+function addHtmlAndHandlers() {
     if (! document.getElementById('cwrc-entity-lookup') ) {
         let panels = ''
-        panelDefs.forEach((p, index) => {
+        Object.entries(lookupSourceMetadata).forEach((entry) => {
+            let id = entry[0];
+            let title = entry[1].title;
             panels += `
-            <div class="panel panel-default cwrc-result-panel" id="cwrc-${p.id}-panel">
+            <div class="panel panel-default cwrc-result-panel" id="cwrc-${id}-panel">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" data-target="#collapse-${p.id}">${p.title}</a>
+                        <a data-toggle="collapse" data-target="#collapse-${id}">${title}</a>
                     </h4>
                 </div>
-                <div id="collapse-${p.id}" class="panel-collapse collapse in">
-                    <ul class="list-group cwrc-result-list" id="cwrc-${p.id}-list">
+                <div id="collapse-${id}" class="panel-collapse collapse in">
+                    <ul class="list-group cwrc-result-list" id="cwrc-${id}-list">
                     </ul>
                 </div>
             </div>`
@@ -317,15 +417,26 @@ function initializeEntityPopup() {
                 <h3 id="cwrc-entity-lookup-title" class="modal-title"></h3>
             </div>
             <div class="modal-body">
-                <div class="input-group">
-                    <input type="text" placeholder="Enter a name to find" class="form-control" id="cwrc-entity-query"/>
-                    <span class="input-group-btn">
-                        <button id="cwrc-entity-lookup-redo" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="text" placeholder="Enter a name to find" class="form-control" id="cwrc-entity-query"/>
+                            <span class="input-group-btn">
+                                <button id="cwrc-entity-lookup-redo" type="button" class="btn btn-default"
+                                        data-toggle="tooltip" data-placement="top" title="Search">
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>&nbsp;
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default"
+                                data-toggle="tooltip" data-placement="top" title="Select lookup sources" style="float: right;">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>&nbsp;
                         </button>
-                    </span>
+                    </div>
                 </div>
-                <div style="width:100%">
+                <div style="width: 100%;">
                     <div class="panel-group">
                         ${panels}
                         <div class="panel panel-default">
@@ -368,6 +479,21 @@ function initializeEntityPopup() {
             </div>
         </div>
     </div>
+</div>
+<div id="cwrc-entity-lookup-edit-dialog" role="dialog" class="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Select lookup sources</h3>
+            </div>
+            <div class="modal-body">
+                ${getSelectSourcesForm()}
+            </div>
+            <div class="modal-footer">
+                <button id="cwrc-entity-lookup-edit-ok" type="button" class="btn btn-default">Use selected</button>
+            </div>
+        </div>
+    </div>
 </div>`
         ));
         $('#cwrc-entity-lookup button[data-dismiss="modal"]').on('click', ()=>cancel());
@@ -381,7 +507,17 @@ function initializeEntityPopup() {
         })
 
         $('#cwrc-entity-lookup-redo').click(function(event) {
-            find($('#cwrc-entity-query').val());
+            rerunSearch();
+        })
+
+        $('#cwrc-entity-lookup-edit').click(function(event) {
+            showSourcesPopover($(this))
+        })
+
+        $('#cwrc-entity-lookup-edit-ok').click(()=>{
+            saveSourcesForm($('#cwrc-entity-lookup-edit-dialog').find('input[type=checkbox]'));
+            destroyModal('cwrc-entity-lookup-edit-dialog');
+            layoutPanels();
         })
 
         $('#cwrc-manual-input').keyup(function(event) {
@@ -446,7 +582,6 @@ function initializeEntityPopup() {
         })
 
     }
-    doShowModal('cwrc-entity-lookup')
 }
 
 function doShowModal(modalId) {
@@ -502,14 +637,35 @@ function handleEditButtonState() {
     }
 }
 
+function showSourcePanels() {
+    entitySources[currentSearchOptions.entityType].forEach((entitySource, entitySourceName)=>{
+        if (isSourceEnabled(entitySourceName)) {
+            $(`#cwrc-${entitySourceName}-panel`).show()
+        } else {
+            $(`#cwrc-${entitySourceName}-panel`).hide()
+        }
+    })
+}
+
 function layoutPanels() {
-    initializeEntityPopup();
-    handleSelectButtonState();
-    handleEditButtonState();
-    // hide all panels
-    $(".cwrc-result-panel").hide()
-    // show panels registered for entity type
-    entitySources[currentSearchOptions.entityType].forEach((entitySource, entitySourceName)=>$(`#cwrc-${entitySourceName}-panel`).show())
+    if (haveSourcesBeenSelected) {
+        doShowModal('cwrc-entity-lookup');
+        $('#cwrc-entity-lookup [data-toggle=tooltip]').tooltip();
+        handleSelectButtonState();
+        handleEditButtonState();
+
+        // hide all panels
+        $(".cwrc-result-panel").hide();
+        // show panels based on selected sources
+        showSourcePanels();
+        
+        if (currentSearchOptions.query) {
+            $('#cwrc-entity-query').val(currentSearchOptions.query)
+            find(currentSearchOptions.query)
+        }
+    } else {
+        doShowModal('cwrc-entity-lookup-edit-dialog')
+    }
 }
 
 function initialize(entityType, entityLookupMethodName, entityLookupTitle, searchOptions) {
@@ -528,16 +684,29 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
         entityFormWindow.close() // always close window
     }
 
+    let lookupSources = Cookies.get(SOURCES_COOKIE_NAME);
+    if (lookupSources === undefined) {
+        haveSourcesBeenSelected = false;
+    } else {
+        haveSourcesBeenSelected = true;
+        try {
+            let sourcesJSON = JSON.parse(lookupSources);
+            for (let source in sourcesJSON) {
+                setSourceEnabled(source, sourcesJSON[source]);
+            }
+        } catch(err) {
+            console.warn('error parsing cookie "'+SOURCES_COOKIE_NAME+'"', err);
+        }
+    }
+
     selectedResult = undefined
     currentSearchOptions = Object.assign(
         {entityType: entityType, entityLookupMethodName: entityLookupMethodName, entityLookupTitle: entityLookupTitle},
         searchOptions
     )
+
+    addHtmlAndHandlers();
     layoutPanels()
-    if (currentSearchOptions.query) {
-        document.getElementById('cwrc-entity-query').value = currentSearchOptions.query
-        find(currentSearchOptions.query)
-    }
 }
 
 function popSearchPerson(searchOptions) {
