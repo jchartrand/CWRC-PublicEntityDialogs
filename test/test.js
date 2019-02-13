@@ -25,6 +25,14 @@ function getQueryOptionsWithCallbackSpy() {
 
 const fixtures = require('./fixtures/sourceData');
 
+const sourceEnabledData = {
+    geonames: true,
+    viaf: true,
+    wikidata: true,
+    getty: true,
+    dbpedia: true
+}
+
 function getGeonamesStubs() {
     return {
 
@@ -86,6 +94,7 @@ async function testEntityType(assert, methodToTest, entityType, entitySourceMeth
     let entitySources = getEntitySourceStubs();
     let queryOptions = getQueryOptionsWithCallbackSpy();
     dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
 
     // 'ACT'
     await dialogsCopy[methodToTest](queryOptions);
@@ -196,6 +205,7 @@ test('showNoLinkButton', async function(assert){
     let entitySources = getEntitySourceStubs();
     let queryOptions = getQueryOptionsWithCallbackSpy();
     dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
 
     dialogsCopy.showNoLinkButton(true)
 
@@ -213,6 +223,7 @@ test('showCreateNewButton', async function(assert){
     let entitySources = getEntitySourceStubs();
     let queryOptions = getQueryOptionsWithCallbackSpy();
     dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
 
     dialogsCopy.showCreateNewButton(true)
 
@@ -230,8 +241,9 @@ test('showEditButton', async function(assert){
     let entitySources = getEntitySourceStubs();
     let queryOptions = getQueryOptionsWithCallbackSpy();
     dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
 
-    dialogsCopy.showCreateNewButton(true)
+    dialogsCopy.showEditButton(true)
 
     await dialogsCopy.popSearchPerson(queryOptions);
 

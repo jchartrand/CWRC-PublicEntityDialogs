@@ -305,6 +305,14 @@ const lookupSourceMetadata = {
     }
 }
 
+// expects an object whose keys are source names and whose values are boolean
+function setEnabledSources(config) {
+    for (let source in config) {
+        setSourceEnabled(source, config[source]);
+    }
+    haveSourcesBeenSelected = true;
+}
+
 function setSourceEnabled(source, enabled) {
     if (lookupSourceMetadata[source]) {
         lookupSourceMetadata[source].enabled = enabled;
@@ -348,9 +356,8 @@ function saveSourcesForm($inputs) {
         let source = $(el).data('source');
         let value = $(el).prop('checked');
         sourceJSON[source] = value;
-        setSourceEnabled(source, value);
     });
-    haveSourcesBeenSelected = true;
+    setEnabledSources(sourceJSON);
     Cookies.set(SOURCES_COOKIE_NAME, sourceJSON, {expires: 93, path: ''}); // expires after approximately 3 months
 }
 
@@ -685,15 +692,10 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
     }
 
     let lookupSources = Cookies.get(SOURCES_COOKIE_NAME);
-    if (lookupSources === undefined) {
-        haveSourcesBeenSelected = false;
-    } else {
-        haveSourcesBeenSelected = true;
+    if (lookupSources !== undefined) {
         try {
             let sourcesJSON = JSON.parse(lookupSources);
-            for (let source in sourcesJSON) {
-                setSourceEnabled(source, sourcesJSON[source]);
-            }
+            setEnabledSources(sourcesJSON);
         } catch(err) {
             console.warn('error parsing cookie "'+SOURCES_COOKIE_NAME+'"', err);
         }
@@ -725,6 +727,8 @@ function popSearchTitle(searchOptions) {
 module.exports = {
     // registerEntitySources lets us more easily pass in mocks when testing.
     registerEntitySources: registerEntitySources,
+
+    setEnabledSources: setEnabledSources,
 
     showCreateNewButton: setShowCreateNewButton,
     showNoLinkButton: setShowNoLinkButton,
