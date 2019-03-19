@@ -129,17 +129,20 @@ let selectedResult = undefined
 function destroyModal(modalId) {
     if (modalId === undefined) {
         destroyModal('cwrc-entity-lookup')
+        destroyModal('cwrc-entity-lookup-edit-dialog')
         destroyModal('cwrc-title-entity-dialog')
     } else {
         let modal = $('#'+modalId);
-        modal.modal('hide').data( 'bs.modal', null );
-        modal[0].parentNode.removeChild(modal[0]);
+        if (modal[0] !== undefined) {
+            modal.modal('hide').data( 'bs.modal', null );
+            modal[0].parentNode.removeChild(modal[0]);
 
-        if (modalId === 'cwrc-entity-lookup') {
-            if (channel) {
-                channel.close()
+            if (modalId === 'cwrc-entity-lookup') {
+                if (channel) {
+                    channel.close()
+                }
+                destroyPopover();
             }
-            destroyPopover();
         }
     }
 }
