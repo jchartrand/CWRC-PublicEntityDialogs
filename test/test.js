@@ -112,8 +112,8 @@ async function testEntityType(assert, methodToTest, entityType, entitySourceMeth
 
     assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
 
-    const fixtureForSelectedResult = fixtures.viaf[entityType][1]
-    const elementForSelectedResult = document.getElementById('cwrc-viaf-list').querySelectorAll('li')[1];
+    const fixtureForSelectedResult = fixtures.wikidata[entityType][1]
+    const elementForSelectedResult = document.getElementById('cwrc-wikidata-list').querySelectorAll('li')[1];
 
     // assert.comment('list visible: '+document.getElementById('cwrc-viaf-list').outerHTML)
     // assert.comment('selected el: '+elementForSelectedResult.outerHTML)
@@ -141,9 +141,9 @@ function testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult )
     $(elementForSelectedResult).click()
 
     // ASSERT
-    let iframe = document.getElementById("entity-iframe");
-    assert.ok(doesElementExist(iframe), 'the iframe exists');
-    assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay), 'the iframe src was set to the correct url')
+    let iframeLoading = document.getElementById("entity-iframe-loading");
+    assert.ok(doesElementExist(iframeLoading), 'the iframe loader exists');
+    // assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay), 'the iframe src was set to the correct url')
     // xhr.restore();
     // await new Promise(resolve => setTimeout(resolve, 50));
     $(elementForSelectedResult).click() // click again to de-select

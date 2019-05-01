@@ -35,15 +35,16 @@ module.exports = {
     },
     wikidata: {
         person: [
-            {name: 'wikidata-name1', description: 'wikidata-1description', id: 'wikidata-Id', uri: testURI, uriForDisplay: displayURI  },
-            {name: 'wikidata-name2', id: 'wikidata-Id2', uri: testURI, uriForDisplay: displayURI  }
+            {name: 'wikidata-name1', description: 'wikidata-description1', id: 'wikidata-Id', uri: testURI, uriForDisplay: displayURI  },
+            {name: 'wikidata-name2', description: 'wikidata-description2', id: 'wikidata-Id2', uri: testURI, uriForDisplay: displayURI  }
         ],
         place: [
             {name: 'wikidata-name3', description: 'wikidata-description3', id: 'wikidata-Id3', uri: testURI , uriForDisplay: displayURI },
-            {name: 'wikidata-name4',  id: 'wikidata-Id4', uri: anotherTestURI, uriForDisplay: displayURI }
+            {name: 'wikidata-name4', description: 'wikidata-description4', id: 'wikidata-Id4', uri: anotherTestURI, uriForDisplay: displayURI }
         ],
         organization: [
-            {name: 'wikidata-name6', description: 'wikidata-description6', id: 'wikidata-Id6', uri: testURI, uriForDisplay: displayURI  }
+            {name: 'wikidata-name6', description: 'wikidata-description6', id: 'wikidata-Id6', uri: testURI, uriForDisplay: displayURI  },
+            {name: 'wikidata-name10', description: 'wikidata-description10', id: 'wikidata-Id10', uri: testURI, uriForDisplay: displayURI  }
         ],
         title: [
             {name: 'wikidata-name7', description: 'wikidata-description7', id: 'wikidata-Id7', uri: testURI, uriForDisplay: displayURI  },
