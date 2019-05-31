@@ -215,6 +215,7 @@ function showPopover(result, li, ev) {
             //placement: "auto",
             html: true,
             title: result.name,
+            sanitize: false, // needed for iframe to be rendered in bootstrap 3.4.1+
             content: ()=>`<div id="entity-iframe-loading" style="width:38em">Loading...</div>
             <iframe id="entity-iframe" src="${result.uriForDisplay}" style="display:none;border:none;height:40em;width:38em"/>`
         })
