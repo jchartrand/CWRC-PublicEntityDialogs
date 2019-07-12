@@ -128,6 +128,7 @@ let selectedResult = undefined
 
 function destroyModal(modalId) {
     if (modalId === undefined) {
+        $('#cwrc-entity-lookup [data-toggle=tooltip]').tooltip('destroy');
         destroyModal('cwrc-entity-lookup')
         destroyModal('cwrc-entity-lookup-edit-dialog')
         destroyModal('cwrc-title-entity-dialog')
@@ -381,6 +382,7 @@ function showSourcesPopover(anchor) {
             placement: 'bottom',
             html: true,
             title: 'Select sources',
+            sanitize: false,
             content: ()=>`${getSelectSourcesForm()}<button class="btn btn-default" type="submit">Use selected</button>`
         })
         anchor.on('hide.bs.popover', ()=>{
