@@ -130,7 +130,7 @@ function destroyModal(modalId) {
     if (modalId === undefined) {
         $('#cwrc-entity-lookup [data-toggle=tooltip]').tooltip('destroy');
         destroyModal('cwrc-entity-lookup')
-        destroyModal('cwrc-entity-lookup-edit-dialog')
+        destroyModal('cwrc-entity-lookup-edit-sources-dialog')
         destroyModal('cwrc-title-entity-dialog')
     } else {
         let modal = $('#'+modalId);
@@ -383,7 +383,7 @@ function showSourcesPopover(anchor) {
             html: true,
             title: 'Select sources',
             sanitize: false,
-            content: ()=>`${getSelectSourcesForm()}<button class="btn btn-default" type="submit">Use selected</button>`
+            content: ()=>`${getSelectSourcesForm()}<button class="btn btn-default" type="submit">Use Selected</button>`
         })
         anchor.on('hide.bs.popover', ()=>{
             anchor.data('bs.popover').tip().find('button[type=submit]').off('click', handleSelectSourcesButton);
@@ -443,8 +443,8 @@ function addHtmlAndHandlers() {
                         </div>
                     </div>
                     <div class="col-sm-2">
-                        <button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default"
-                                data-toggle="tooltip" data-placement="top" title="Select lookup sources" style="float: right;">
+                        <button id="cwrc-entity-lookup-edit-sources" type="button" class="btn btn-default"
+                                data-toggle="tooltip" data-placement="top" title="Select Lookup Sources" style="float: right;">
                             <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>&nbsp;
                         </button>
                     </div>
@@ -466,11 +466,11 @@ function addHtmlAndHandlers() {
             <div class="modal-footer">
                 <button id="cwrc-entity-lookup-select" type="button" class="btn btn-default">Select</button>
                 ${showNoLinkButton ? 
-                '<button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag without entity linking</button>':''}
+                '<button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag Without Linking</button>':''}
                 ${showEditButton ? 
-                '<button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default">Edit selected</button>':''}
+                '<button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default">Edit Selected</button>':''}
                 ${showCreateNewButton ?
-                '<button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create new</button>':''}
+                '<button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create New</button>':''}
                 <button id="cwrc-entity-lookup-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -480,7 +480,7 @@ function addHtmlAndHandlers() {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="cwrc-entity-lookup-title" class="modal-title">Create a new entity</h3>
+                <h3 id="cwrc-entity-lookup-title" class="modal-title">Create a New Entity</h3>
             </div>
             <div class="modal-body">
                 <p>A new window will open, where you can navigate to the desired collection and create the new entity (a citation object).</p>
@@ -493,17 +493,17 @@ function addHtmlAndHandlers() {
         </div>
     </div>
 </div>
-<div id="cwrc-entity-lookup-edit-dialog" role="dialog" class="modal">
+<div id="cwrc-entity-lookup-edit-sources-dialog" role="dialog" class="modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Select lookup sources</h3>
+                <h3 class="modal-title">Select Lookup Sources</h3>
             </div>
             <div class="modal-body">
                 ${getSelectSourcesForm()}
             </div>
             <div class="modal-footer">
-                <button id="cwrc-entity-lookup-edit-ok" type="button" class="btn btn-default">Use selected</button>
+                <button id="cwrc-entity-lookup-edit-sources-ok" type="button" class="btn btn-default">Use Selected</button>
             </div>
         </div>
     </div>
@@ -523,13 +523,13 @@ function addHtmlAndHandlers() {
             rerunSearch();
         })
 
-        $('#cwrc-entity-lookup-edit').click(function(event) {
+        $('#cwrc-entity-lookup-edit-sources').click(function(event) {
             showSourcesPopover($(this))
         })
 
-        $('#cwrc-entity-lookup-edit-ok').click(()=>{
-            saveSourcesForm($('#cwrc-entity-lookup-edit-dialog').find('input[type=checkbox]'));
-            destroyModal('cwrc-entity-lookup-edit-dialog');
+        $('#cwrc-entity-lookup-edit-sources-ok').click(()=>{
+            saveSourcesForm($('#cwrc-entity-lookup-edit-sources-dialog').find('input[type=checkbox]'));
+            destroyModal('cwrc-entity-lookup-edit-sources-dialog');
             layoutPanels();
         })
 
@@ -677,7 +677,7 @@ function layoutPanels() {
             find(currentSearchOptions.query)
         }
     } else {
-        doShowModal('cwrc-entity-lookup-edit-dialog')
+        doShowModal('cwrc-entity-lookup-edit-sources-dialog')
     }
 }
 
