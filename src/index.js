@@ -155,7 +155,7 @@ function returnResult(result) {
 
 function cancel() {
     destroyModal()
-    if (currentSearchOptions.cancel) currentSearchOptions.cancel()
+    if (currentSearchOptions.cancelled) currentSearchOptions.cancelled()
 }
 
 function clearOldResults() {
@@ -466,7 +466,8 @@ function addHtmlAndHandlers() {
             <div class="modal-footer">
                 <button id="cwrc-entity-lookup-select" type="button" class="btn btn-default">Select</button>
                 ${showNoLinkButton ? 
-                '<button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag Without Linking</button>':''}
+                '<button id="cwrc-entity-lookup-nolink" type="button" class="btn btn-default">Tag Without Linking</button>'+
+                '<button id="cwrc-entity-lookup-keeplink" type="button" class="btn btn-default">Keep Current Link</button>':''}
                 ${showEditButton ? 
                 '<button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default">Edit Selected</button>':''}
                 ${showCreateNewButton ?
@@ -582,6 +583,13 @@ function addHtmlAndHandlers() {
 
         $('#cwrc-entity-lookup-nolink').click(function(event) {
             returnResult({})
+        })
+
+        $('#cwrc-entity-lookup-keeplink').click(function(event) {
+            returnResult({
+                uri: currentSearchOptions.uri,
+                name: currentSearchOptions.name
+            })
         })
 
         $('#cwrc-title-entity-dialog-ok').click(function(event) {
@@ -714,8 +722,36 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
     )
 
     addHtmlAndHandlers();
-    layoutPanels()
+    layoutPanels();
+
+    if (currentSearchOptions.uri) {
+        $('#cwrc-entity-lookup-keeplink').show();
+    } else {
+        $('#cwrc-entity-lookup-keeplink').hide();
+    }
 }
+
+
+/*
+The object that is passed to popupSearchXXX :
+{
+    parentEl: Element,
+    query: query,
+    uri: uri, // previously selected uri
+    name: name, // previously selected name
+    success: (result)=>{result is described below},
+    error: (error)=>{},
+    cancelled: ()=>{},
+}
+The object that is returned in the success callback:
+{
+    result.id    // usually the same as result.uri
+    result.uri
+    result.name
+    result.repository
+}
+*/
+
 
 function popSearchPerson(searchOptions) {
     return initialize('person', 'findPerson', 'Find a Person', searchOptions)
@@ -756,23 +792,3 @@ module.exports = {
     }
 
 }
-
-/*
-The object that is passed to popupSearchXXX :
-{
-    query: query,
-    success: (result)=>{result is described below},
-    error: (error)=>{},
-    cancelled: ()=>{},
-}
-The object that is returned in the success callback:
-{
-    result.id    // the cwrcBridge callback overwrites this with the result.uri
-    result.uri
-    result.name
-    result.repository
-    result.data  // the cwrc bridge doesn't use this, and actually just deletes it.
-}
-    The cwrcBridge either passes this to the Entity.setLookupInfo (which uses the id, name, and repository) if the call was the result of a search on
-    an existing entity, OR passes the result object to the 'local' dialog.
-*/
