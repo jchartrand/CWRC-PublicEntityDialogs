@@ -13,119 +13,47 @@
 
 1. [Overview](#overview)
 1. [Installation](#installation)
-1. [Configuration](#configuration)
+1. [Use](#use)
 1. [API](#api)
 1. [Development](#development)
 
 ### Overview
 
-The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and places) in various public name authority files (e.g., VIAF) or databases (e.g., Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
+The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and titles) in various public name authority files (e.g. VIAF) or databases (e.g. Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
 
-An example of their use with the CWRC-WriterBase is the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter)
-
-The dialogs could also be used outside of the CWRC-WriterBase, as described below.
+The list of available entity lookup sources can be found [here](https://github.com/cwrc?q=entity-lookup).
 
 ### Installation
 
-The dialogs are to be used in a web browser.  You may therefore incorporate them into your own javascript application in two ways:
+```npm install cwrc-public-entity-dialogs```
 
-1.  **Script tag**  
+### Use
 
-Download the dist/cwrcdialogs.js file and make it available on your server, then include it in a script tag in your html file:
-
+The dialogs must be configured with entity lookup sources, using the registerEntitySources method. They are then passed to the CWRC-WriterBase.
 ```
-<body>
-<script type="text/javascript" src ="./pathToTheFileOnYourServer/cwrcdialogs.js"></script>
-</body>
-```
+const EntityLookupDialogs = require('cwrc-public-entity-dialogs')
 
-You can then access the dialogs in javascript through the global variable 'cwrcdialogs':
+const viaf = require('viaf-entity-lookup')
+const dbpedia = require('dbpedia-entity-lookup')
 
-```window.cwrcdialogs```
+EntityLookupDialogs.registerEntitySources({
+  person: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
+  place: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
+  organization: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
+  title: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia)
+})
 
-
-2. **NPM**
-
-This assumes that your whole javascript project will be built around NPM, and that'll you bundle your javascript using something like [Browserify](http://browserify.org) or [webpack](https://webpack.js.org).  The bundlers themselves are well documented, and you can also look at the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter) which uses browserify, and uses the CWRC-PublicEntityDialogs.
-
-Install the cwrc-public-entity-dialogs NPM package into your project and save in dependencies (in your package.json):
-
-```npm i cwrc-public-entity-dialogs -S```
-
-Include the dialogs in your javascript:
-
-```let entityDialogs = require('cwrc-public-entity-dialogs');```
-
-(**NOTE:**  the package.json in this repository, and it's use of browserify, is for development work on this package, and is not meant to be a template from which you can start your own project that uses these dialogs.  Again, the best example of how to use these dialogs through NPM is the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter).)
-### Configuration
-
-The dialogs must be configured with public entity sources, using the registerEntitySources method (see API below)
+const CWRCWriter = require('cwrc-writer-base')
+const writer = new CWRCWriter({
+  entityLookupDialogs: EntityLookupDialogs
+})
+ ```
 
 ### API
 
-###### registerEntitySources(sources)
-
-where ```sources``` is an object like:
-
-```
-{
-    people: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
-    places: (new Map()).set('geonames', geonames).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
-    organizations: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
-    titles: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty).set('dbpedia',dbpedia),
-}
-```
-
-and each of the values passed on the set methods is an imported module, e.g.,
-
-```
-let viaf = require('viaf-entity-lookup')
-let wikidata = require('wikidata-entity-lookup')
-let getty = require('getty-entity-lookup')
-let dbpedia = require('dbpedia-entity-lookup')
-let geonames = require('geonames-entity-lookup')
-```
-
-Each of the npm modules listed above can currently be used.  
-
-Entity sources must be registered.  See the [CWRC-GitWriter](https://github.com/cwrc/CWRC-GitWriter/blob/master/src/js/app.js) for an example of usage, or the test/test.js file in this repository, which uses mockes for the entity sources.
-
-The following methods open bootstrap dialogs:
-
-
-###### popSearchPerson(options)
-
-###### popSearchOrganization(options)
-
-###### popSearchPlace(options)
-
-###### popSearchTitle(options)
-  
-where 'options' is an object with three properties:
-
-```
-{
-    query:  The query string supplied by the end user.   
-    success: A callback that takes one argument, an object holding the result of the lookup, defined below.
-    cancelled: A callback with no arguments, to notify the CWRC-Writer that the entity lookup was cancelled.
-}
-```
-
-The object returned in the `success` callback is:
-
-```
-{   
-    name: a string - the name of the entity to display,
-    uri: uri to be used as the Linked Data URI for the entity,
-    id: same as uri,
-    repository: the name of the authority in which the result was found, e.g., 'viaf'
-}
-```
------
+[View the full API here](https://github.com/cwrc/CWRC-PublicEntityDialogs/blob/master/API.md)
 
 ### Development
-
-development.html is provided along with browserify and watch scripts in the package.json to allow working with the dialogs in a local browser.
 
 [CWRC-Writer-Dev-Docs](https://github.com/jchartrand/CWRC-Writer-Dev-Docs) explains how to work with CWRC-Writer GitHub repositories, including this one.
 
