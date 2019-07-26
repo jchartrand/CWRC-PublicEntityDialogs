@@ -1,4 +1,7 @@
-'use strict';
+/**
+ * Module providing bootstrap dialogs for finding and selecting entities.
+ * @module cwrc-public-entity-dialogs
+ */
 
 // shared instance of bootstraped jquery for entity and git dialogs
 let $ = window.cwrcQuery
@@ -64,32 +67,58 @@ styleEl.appendChild(document.createTextNode(`
 `))
 document.querySelector('head').appendChild(styleEl)
 
-// entitySources is an object passed in by registerEntitySources that looks like:
-// where the value of each setter on the map is an imported module.
-/*
-{
-    person: (new Map()).set('cwrc', cwrc).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-    place: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-    organization: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-    title: (new Map()).set('viaf', viaf).set('dbpedia': dbpedia).set('wikidata': wikidata).set('getty':getty),
-}
-*/
 let entitySources;
+/**
+ * Register the entity lookup sources that will be used by this module.
+ * The sources object should have keys which correspond to the 4 entity types.
+ * The values of those keys should be Maps where the key is the lookup ID and the value is the lookup module.
+ * @see cwrc-public-entity-dialogs.lookupSourceMetadata
+ * @example
+ * const viaf = require('viaf-entity-lookup')
+ * const dbpedia = require('dbpedia-entity-lookup')
+ * const sources = {
+ *  person: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
+ *  place: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
+ *  organization: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
+ *  title: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia)
+ * }
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} sources
+ */
 function registerEntitySources(sources) {
     entitySources = sources;
 }
 
 let entityFormsRoot = '';
+/**
+ * Set the URL for where the [CWRC entity management forms]{@link https://github.com/cwrc/cwrc-entity-management-forms-static} are located.
+ * Currently only used by [Islandora CWRC Writer]{@link https://github.com/cwrc/Islandora-CWRC-Writer}.
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {String} url 
+ */
 function setEntityFormsRoot(url) {
     entityFormsRoot = url;
 }
 
 let collectionsRoot = '';
+/**
+ * Set the URL to use as the top level collection for create title entities.
+ * Currently only used by [Islandora CWRC Writer]{@link https://github.com/cwrc/Islandora-CWRC-Writer}.
+ * @see 'cwrc-title-entity-dialog'
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {String} url
+ */
 function setCollectionsRoot(url) {
     collectionsRoot = url;
 }
 
 let showCreateNewButton = true;
+/**
+ * Whether to show the Create New button, used to spawn the [CWRC entity management forms]{@link https://github.com/cwrc/cwrc-entity-management-forms-static}.
+ * Currently only used by [Islandora CWRC Writer]{@link https://github.com/cwrc/Islandora-CWRC-Writer}.
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Boolean} value 
+ */
 function setShowCreateNewButton(value) {
     if (typeof value === 'boolean') {
         showCreateNewButton = value;
@@ -97,6 +126,12 @@ function setShowCreateNewButton(value) {
 }
 
 let showEditButton = true;
+/**
+ * Whether to show the Edit Selected button, used to spawn the [CWRC entity management forms]{@link https://github.com/cwrc/cwrc-entity-management-forms-static}.
+ * Currently only used by [Islandora CWRC Writer]{@link https://github.com/cwrc/Islandora-CWRC-Writer}.
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Boolean} value 
+ */
 function setShowEditButton(value) {
     if (typeof value === 'boolean') {
         showEditButton = value;
@@ -104,6 +139,11 @@ function setShowEditButton(value) {
 }
 
 let showNoLinkButton = true;
+/**
+ * Whether to show the Tag Without Linking button, which allows the user to skip this dialog in the entity tagging process.
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Boolean} value 
+ */
 function setShowNoLinkButton(value) {
     if (typeof value === 'boolean') {
         showNoLinkButton = value;
@@ -148,6 +188,15 @@ function destroyModal(modalId) {
     }
 }
 
+/**
+ * Call the success method specified in searchOptions with the entity lookup result.
+ * @protected
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} result The entity lookup result
+ * @param {String} result.uri The entity URI
+ * @param {String} result.name The entity name/lemma
+ * @param {String} result.repository The name of the entity lookup source
+ */
 function returnResult(result) {
     destroyModal()
     currentSearchOptions.success(result);
@@ -283,6 +332,17 @@ function showError(error, entitySourceName) {
     resultList.append(`<li class="list-group-item list-group-item-danger">${error}</li>`)
 }
 
+/**
+ * The list of possible entity lookup sources, their IDs, titles, and whether or not they're enabled.
+ * @name lookupSourceMetadata
+ * @memberof module:cwrc-public-entity-dialogs
+ * @property {String} cwrc
+ * @property {String} viaf
+ * @property {String} dbpedia
+ * @property {String} geonames
+ * @property {String} getty
+ * @property {String} wikidata
+ */
 const lookupSourceMetadata = {
     'cwrc': {
         title: 'CWRC',
@@ -310,7 +370,13 @@ const lookupSourceMetadata = {
     }
 }
 
-// expects an object whose keys are source names and whose values are boolean
+/**
+ * Set which entity lookup sources are enabled, i.e. available to the user.
+ * @memberof module:cwrc-public-entity-dialogs
+ * @example
+ * {'viaf': true, 'wikidata': true, 'getty': true, 'dbpedia': true, 'geonames': true}
+ * @param {Object} config
+ */
 function setEnabledSources(config) {
     for (let source in config) {
         setSourceEnabled(source, config[source]);
@@ -689,6 +755,21 @@ function layoutPanels() {
     }
 }
 
+/**
+ * Initialize and display an entity lookup dialog.
+ * @protected
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {String} entityType The entity type
+ * @param {String} entityLookupMethodName The name of the method to call on the lookup module
+ * @param {String} entityLookupTitle The dialog title
+ * @param {Object} searchOptions The search options
+ * @param {String} searchOptions.query The search query
+ * @param {Function} searchOptions.success The function to call with the entity the user selected, see returnResult for the format
+ * @param {Function} searchOptions.cancelled The function to call if the user cancelled the dialog
+ * @param {Element} [searchOptions.parentEl=document.body] The element to append the dialog to
+ * @param {String} [searchOptions.uri] The entity URI, if editing
+ * @param {String} [searchOptions.name] The entity name/lemma, if editing
+ */
 function initialize(entityType, entityLookupMethodName, entityLookupTitle, searchOptions) {
     channel = new BroadcastChannel('cwrc-entity-management-forms')
     channel.onmessage = (id) => {
@@ -731,43 +812,44 @@ function initialize(entityType, entityLookupMethodName, entityLookupTitle, searc
     }
 }
 
-
-/*
-The object that is passed to popupSearchXXX :
-{
-    parentEl: Element,
-    query: query,
-    uri: uri, // previously selected uri
-    name: name, // previously selected name
-    success: (result)=>{result is described below},
-    error: (error)=>{},
-    cancelled: ()=>{},
-}
-The object that is returned in the success callback:
-{
-    result.id    // usually the same as result.uri
-    result.uri
-    result.name
-    result.repository
-}
-*/
-
-
+/**
+ * Open a person entity lookup dialog.
+ * @see cwrc-public-entity-dialogs.initialize
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} searchOptions 
+ */
 function popSearchPerson(searchOptions) {
     return initialize('person', 'findPerson', 'Find a Person', searchOptions)
 }
+/**
+ * Open a place entity lookup dialog.
+ * @see cwrc-public-entity-dialogs.initialize
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} searchOptions 
+ */
 function popSearchPlace(searchOptions) {
     return initialize('place', 'findPlace', 'Find a Place', searchOptions)
 }
+/**
+ * Open a organization entity lookup dialog.
+ * @see cwrc-public-entity-dialogs.initialize
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} searchOptions 
+ */
 function popSearchOrganization(searchOptions) {
     return initialize('organization', 'findOrganization', 'Find an Organization', searchOptions)
 }
+/**
+ * Open a title entity lookup dialog.
+ * @see cwrc-public-entity-dialogs.initialize
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} searchOptions 
+ */
 function popSearchTitle(searchOptions) {
     return initialize('title', 'findTitle', 'Find a Title', searchOptions)
 }
 
 module.exports = {
-    // registerEntitySources lets us more easily pass in mocks when testing.
     registerEntitySources: registerEntitySources,
 
     setEnabledSources: setEnabledSources,

@@ -34,6 +34,7 @@
     "generate-coverage": "nyc report --reporter=lcov",
     "check-coverage": "nyc check-coverage --statements 0 --branches 0 --functions 0 --lines 0",
     "report-coverage": "cat ./coverage/lcov.info | codecov",
+    "docs": "jsdoc2md src/index.js > API.md",
     "travis-deploy-once": "travis-deploy-once"
   },
   "dependencies": {
@@ -60,6 +61,7 @@
     "getty-entity-lookup": "^1.4.5",
     "git-cz": "^1.8.4",
     "husky": "^2.1.0",
+    "jsdoc-to-markdown": "^5.0.0",
     "mkdirp": "0.5.1",
     "nyc": "^14.1.1",
     "semantic-release": "^15.13.19",
