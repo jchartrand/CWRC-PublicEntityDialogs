@@ -21,7 +21,12 @@
 
 The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and titles) in various public name authority files (e.g. VIAF) or databases (e.g. Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
 
-The list of available entity lookup sources can be found [here](https://github.com/cwrc?q=entity-lookup).
+The currently available entity lookup sources are:
+* [getty-entity-lookup](https://github.com/cwrc/getty-entity-lookup)
+* [wikidata-entity-lookup](https://github.com/cwrc/wikidata-entity-lookup)
+* [dbpedia-entity-lookup](https://github.com/cwrc/dbpedia-entity-lookup)
+* [viaf-entity-lookup](https://github.com/cwrc/viaf-entity-lookup)
+* [geonames-entity-lookup](https://github.com/cwrc/geonames-entity-lookup)
 
 ### Installation
 
