@@ -55,6 +55,4 @@ const writer = new CWRCWriter({
 
 ### Development
 
-[CWRC-Writer-Dev-Docs](https://github.com/jchartrand/CWRC-Writer-Dev-Docs) explains how to work with CWRC-Writer GitHub repositories, including this one.
-
-
+[CWRC-Writer-Dev-Docs](https://github.com/cwrc/CWRC-Writer-Dev-Docs) explains how to work with CWRC-Writer GitHub repositories, including this one.
