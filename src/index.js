@@ -112,6 +112,18 @@ function setCollectionsRoot(url) {
     collectionsRoot = url;
 }
 
+let getEntityCollectionsUrl = '';
+/**
+ * Set the URL to call to get the list of entity collections that the user has write permissions for.
+ * If the list is empty then the Create New button will be disabled.
+ * Currently only used by [Islandora CWRC Writer]{@link https://github.com/cwrc/Islandora-CWRC-Writer}.
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {String} url
+ */
+function setEntityCollectionsUrl(url) {
+    getEntityCollectionsUrl = url;
+}
+
 let showCreateNewButton = true;
 /**
  * Whether to show the Create New button, used to spawn the [CWRC entity management forms]{@link https://github.com/cwrc/cwrc-entity-management-forms-static}.
@@ -228,6 +240,20 @@ function find(query) {
             }
         }
     )
+}
+
+function getEntityCollectionsForUser() {
+    return $.ajax({
+        url: getEntityCollectionsUrl  
+    }).then((data)=>{
+        try {
+            return data.response.docs;
+        } catch(e) {
+            return [];
+        }
+    },()=>{
+        return [];
+    });
 }
 
 function destroyPopover() {
@@ -537,7 +563,7 @@ function addHtmlAndHandlers() {
                 ${showEditButton ? 
                 '<button id="cwrc-entity-lookup-edit" type="button" class="btn btn-default">Edit Selected</button>':''}
                 ${showCreateNewButton ?
-                '<button id="cwrc-entity-lookup-new" type="button" class="btn btn-default">Create New</button>':''}
+                '<button id="cwrc-entity-lookup-new" type="button" class="btn btn-default" disabled="disabled">Create New</button>':''}
                 <button id="cwrc-entity-lookup-cancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -741,6 +767,16 @@ function layoutPanels() {
         handleSelectButtonState();
         handleEditButtonState();
 
+        if (showCreateNewButton) {
+            getEntityCollectionsForUser().then((collections)=>{
+                if (collections.length > 0) {
+                    $('#cwrc-entity-lookup-new').prop('disabled', '');
+                } else {
+                    $('#cwrc-entity-lookup-new').prop('disabled', 'disabled');
+                }
+            })
+        }
+
         // hide all panels
         $(".cwrc-result-panel").hide();
         // show panels based on selected sources
@@ -860,6 +896,7 @@ module.exports = {
 
     setEntityFormsRoot: setEntityFormsRoot,
     setCollectionsRoot: setCollectionsRoot,
+    setEntityCollectionsUrl: setEntityCollectionsUrl,
 
     popSearchPerson: popSearchPerson,
     popSearchOrganization: popSearchOrganization,
