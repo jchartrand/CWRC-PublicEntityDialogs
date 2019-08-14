@@ -884,6 +884,15 @@ function popSearchOrganization(searchOptions) {
 function popSearchTitle(searchOptions) {
     return initialize('title', 'findTitle', 'Find a Title', searchOptions)
 }
+/**
+ * Open a reference/generic entity lookup dialog.
+ * @see cwrc-public-entity-dialogs.initialize
+ * @memberof module:cwrc-public-entity-dialogs
+ * @param {Object} searchOptions 
+ */
+function popSearchRS(searchOptions) {
+    return initialize('rs', 'findRS', 'Find a Referencing String', searchOptions)
+}
 
 module.exports = {
     registerEntitySources: registerEntitySources,
@@ -902,12 +911,14 @@ module.exports = {
     popSearchOrganization: popSearchOrganization,
     popSearchPlace: popSearchPlace,
     popSearchTitle: popSearchTitle,
+    popSearchRS: popSearchRS,
 
     popSearch: {
         person : popSearchPerson,
         organization : popSearchOrganization,
         place : popSearchPlace,
-        title : popSearchTitle
+        title : popSearchTitle,
+        rs : popSearchRS
     }
 
 }

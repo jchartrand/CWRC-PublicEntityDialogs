@@ -31,6 +31,10 @@ module.exports = {
             {name: 'viaf-name-10', description: 'viaf-10', id: 'viaf-Id10', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-11', id: 'viaf-Id11', uri: testURI, uriForDisplay: displayURI  },
             {name: 'viaf-name-12', description: 'viaf-12', id: 'viaf-Id12', uri: testURI , uriForDisplay: displayURI }
+        ],
+        rs: [
+            {name: 'viaf-name-16', id: 'viaf-Id16', uri: testURI, uriForDisplay: displayURI  },
+            {name: 'viaf-name-24', id: 'viaf-Id24', uri: testURI, uriForDisplay: displayURI  }
         ]
     },
     wikidata: {

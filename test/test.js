@@ -47,7 +47,8 @@ function getViafStubs() {
         findPerson: sinon.stub().resolves(fixtures.viaf.person),
         findPlace: sinon.stub().resolves(fixtures.viaf.place),
         findOrganization: sinon.stub().resolves(fixtures.viaf.organization),
-        findTitle: sinon.stub().resolves(fixtures.viaf.title)
+        findTitle: sinon.stub().resolves(fixtures.viaf.title),
+        findRS: sinon.stub().resolves(fixtures.viaf.rs)
     }
 }
 
@@ -84,6 +85,7 @@ function getEntitySourceStubs() {
         place: (new Map()).set('geonames', getGeonamesStubs()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
         organization: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
         title: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+        rs: (new Map()).set('viaf', getViafStubs())
     }
 }
 
