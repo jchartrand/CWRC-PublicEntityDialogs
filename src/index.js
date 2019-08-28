@@ -368,6 +368,7 @@ function showError(error, entitySourceName) {
  * @property {String} geonames
  * @property {String} getty
  * @property {String} wikidata
+ * @property {String} lgpn
  */
 const lookupSourceMetadata = {
     'cwrc': {
@@ -392,6 +393,10 @@ const lookupSourceMetadata = {
     },
     'wikidata': {
         title: 'Wikidata',
+        enabled: true
+    },
+    'lgpn': {
+        title: 'LGPN',
         enabled: true
     }
 }
