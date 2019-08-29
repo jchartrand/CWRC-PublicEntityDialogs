@@ -1,24 +1,21 @@
 'use strict';
 
 let $ = require('jquery');
-window.jQuery = window.cwrcQuery = $;
-require('bootstrap');
 
-// needed for jquery is(':visible') to work in jsdom, from: https://github.com/jsdom/jsdom/issues/1048#issuecomment-401599392
-window.Element.prototype.getClientRects = function() {
+// needed for jquery is(':visible') to work in jsdom, adapted from: https://github.com/jsdom/jsdom/issues/1048#issuecomment-401599392
+window.Element.prototype.getClientRects = function () {
     var node = this;
-    while(node) {
-        if(node === document) {
-            break;
-        }
+
+    while (node) {
         // don't know why but style is sometimes undefined
         if (!node.style || node.style.display === 'none' || node.style.visibility === 'hidden') {
             return [];
         }
-        node = node.parentNode;
+        node = node.parentElement;
     }
-     var self = $(this);
-    return [{width: self.width(), height: self.height()}];
+
+    var clientRect = { width: this.clientWidth, height: this.clientHeight };
+    return [clientRect];
 };
 
 jest.mock('broadcast-channel');
@@ -89,7 +86,7 @@ function testEntityType(methodToTest, entityType, entitySourceMethod) {
 
     const queryOptions = {
         query: 'jones',
-        success: (results) => {}
+        success: (results) => { }
     };
 
     const spy = jest.spyOn(queryOptions, 'success');
@@ -145,10 +142,10 @@ function testIFrame(fixtureForSelectedResult, elementForSelectedResult) {
         $(elementForSelectedResult).on('shown.bs.popover', () => {
             let iframeLoading = document.getElementById("entity-iframe-loading");
             expect(doesElementExist(iframeLoading)).toBe(true);
-            
+
             let iframe = document.getElementById('entity-iframe');
             expect(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay)).toBe(true);
-            
+
             $(elementForSelectedResult).click() // click again to de-select
 
             resolve();
@@ -178,6 +175,39 @@ test('popSearchPerson', () => {
 //     return testEntityType('popSearchTitle','title', 'findTitle');
 // })
 
+test('showSourcesPopover', () => {
+    expect.assertions(1);
+
+    return new Promise((resolve, reject) => {
+        let dialogsCopy = require('../src/index.js')
+        let entitySources = getEntitySourceStubs();
+        dialogsCopy.registerEntitySources(entitySources)
+        dialogsCopy.setEnabledSources(sourceEnabledData)
+
+        dialogsCopy.init();
+
+        $('#cwrc-entity-lookup').on('shown.bs.modal', () => {
+            $('#cwrc-entity-lookup-edit-sources').one('shown.bs.popover', () => {
+                const sourcesForm = $('#cwrc-entity-lookup-edit-sources').next();
+
+                expect(sourcesForm.is(':visible')).toBe(true);
+
+                sourcesForm.find('input[data-source="viaf"]').click();
+                sourcesForm.find('button').click();
+
+                resolve();
+            });
+
+            $('#cwrc-entity-lookup-edit-sources').click();
+        });
+
+        dialogsCopy.popSearchPerson({
+            query: 'jones',
+            success: (results) => { }
+        });
+    })
+})
+
 test('showNoLinkButton', () => {
     expect.assertions(1);
 
@@ -190,7 +220,7 @@ test('showNoLinkButton', () => {
 
     dialogsCopy.popSearchPerson({
         query: 'jones',
-        success: (results) => {}
+        success: (results) => { }
     });
 
     expect($('#cwrc-entity-lookup-nolink').length).toBe(1);
@@ -208,7 +238,7 @@ test('showCreateNewButton', () => {
 
     dialogsCopy.popSearchPerson({
         query: 'jones',
-        success: (results) => {}
+        success: (results) => { }
     });
 
     expect($('#cwrc-entity-lookup-new').length).toBe(1);
@@ -226,7 +256,7 @@ test('showEditButton', () => {
 
     dialogsCopy.popSearchPerson({
         query: 'jones',
-        success: (results) => {}
+        success: (results) => { }
     });
 
     expect($('#cwrc-entity-lookup-edit').length).toBe(1);

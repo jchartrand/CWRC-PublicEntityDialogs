@@ -474,7 +474,7 @@ function showSourcesPopover(anchor) {
     let hasPopover = anchor.data('bs.popover') !== undefined;
     if (!hasPopover) {
         anchor.popover({
-            animation: true,
+            animation: false,
             trigger: 'manual',
             placement: 'bottom',
             html: true,
@@ -482,19 +482,15 @@ function showSourcesPopover(anchor) {
             sanitize: false,
             content: ()=>`${getSelectSourcesForm()}<button class="btn btn-default" type="submit">Use Selected</button>`
         })
-        anchor.on('hide.bs.popover', ()=>{
+        anchor.on('hide.bs.popover', () => {
             anchor.data('bs.popover').tip().find('button[type=submit]').off('click', handleSelectSourcesButton);
         })
     }
 
-    if (anchor.data('bs.popover').tip().is(':visible')) {
-        return;
-    } else {
-        anchor.popover('show')
-        anchor.data('bs.popover').tip().css({'min-width': '230px'})
-        anchor.popover('show') // need to show again after setting width in order to have correct positioning
-        anchor.data('bs.popover').tip().find('button[type=submit]').on('click', handleSelectSourcesButton) // need to add event handling after showing for 2nd time
-    }
+    anchor.popover('show')
+    anchor.data('bs.popover').tip().css({'min-width': '230px'})
+    anchor.popover('show') // need to show again after setting width in order to have correct positioning
+    anchor.data('bs.popover').tip().find('button[type=submit]').on('click', handleSelectSourcesButton) // need to add event handling after showing for 2nd time
 }
 
 function addHtmlAndHandlers() {
