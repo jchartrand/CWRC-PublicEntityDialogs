@@ -1,29 +1,27 @@
 'use strict';
 
-let $ = require('jquery')
-const tape = require('tape');
-const _test = require('tape-promise').default;
-const test = _test(tape);
-const sinon = require('sinon');
+let $ = require('jquery');
+window.jQuery = window.cwrcQuery = $;
+require('bootstrap');
 
-
-// print istanbul's coverage info to the console so we can get it later in our npm script where we save it to a file.
-test.onFinish(()=>{
-    console.log('# coverage:', JSON.stringify(window.__coverage__))
-    window.close()
-});
-
-// couple other tests might want:
-// - that entity sources aren't shown if the config doesn't list them.
-// - no results for an entity source should show a message.
-
-
-function getQueryOptionsWithCallbackSpy() {
-    return {
-        query: 'jones',
-        success: sinon.spy()
+// needed for jquery is(':visible') to work in jsdom, from: https://github.com/jsdom/jsdom/issues/1048#issuecomment-401599392
+window.Element.prototype.getClientRects = function() {
+    var node = this;
+    while(node) {
+        if(node === document) {
+            break;
+        }
+        // don't know why but style is sometimes undefined
+        if (!node.style || node.style.display === 'none' || node.style.visibility === 'hidden') {
+            return [];
+        }
+        node = node.parentNode;
     }
-}
+     var self = $(this);
+    return [{width: self.width(), height: self.height()}];
+};
+
+jest.mock('broadcast-channel');
 
 const fixtures = require('./fixtures/sourceData');
 
@@ -37,146 +35,213 @@ const sourceEnabledData = {
 
 function getGeonamesStubs() {
     return {
-
-        findPlace: sinon.stub().resolves(fixtures.geonames.place)
+        findPlace: () => { return Promise.resolve(fixtures.geonames.place); }
     }
 }
 
 function getViafStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.viaf.person),
-        findPlace: sinon.stub().resolves(fixtures.viaf.place),
-        findOrganization: sinon.stub().resolves(fixtures.viaf.organization),
-        findTitle: sinon.stub().resolves(fixtures.viaf.title),
-        findRS: sinon.stub().resolves(fixtures.viaf.rs)
+        findPerson: () => { return Promise.resolve(fixtures.viaf.person); },
+        findPlace: () => { return Promise.resolve(fixtures.viaf.place); },
+        findOrganization: () => { return Promise.resolve(fixtures.viaf.organization); },
+        findTitle: () => { return Promise.resolve(fixtures.viaf.title); },
+        findRS: () => { return Promise.resolve(fixtures.viaf.rs); }
     }
 }
 
 function getWikidataStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.wikidata.person),
-        findPlace: sinon.stub().resolves(fixtures.wikidata.place),
-        findOrganization:sinon.stub().resolves(fixtures.wikidata.organization),
-        findTitle: sinon.stub().resolves(fixtures.wikidata.title)
+        findPerson: () => { return Promise.resolve(fixtures.wikidata.person); },
+        findPlace: () => { return Promise.resolve(fixtures.wikidata.place); },
+        findOrganization: () => { return Promise.resolve(fixtures.wikidata.organization); },
+        findTitle: () => { return Promise.resolve(fixtures.wikidata.title); }
     }
 }
 
 function getGettyStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.getty.person),
-        findPlace: sinon.stub().resolves(fixtures.getty.place)
+        findPerson: () => { return Promise.resolve(fixtures.getty.person); },
+        findPlace: () => { return Promise.resolve(fixtures.getty.place); }
     }
 }
-
 
 function getDbpediaStubs() {
     return {
-        findPerson: sinon.stub().resolves(fixtures.dbpedia.person),
-        findPlace: sinon.stub().resolves(fixtures.dbpedia.place),
-        findOrganization:sinon.stub().resolves(fixtures.dbpedia.organization),
-        findTitle: sinon.stub().resolves(fixtures.dbpedia.title)
+        findPerson: () => { return Promise.resolve(fixtures.dbpedia.person); },
+        findPlace: () => { return Promise.resolve(fixtures.dbpedia.place); },
+        findOrganization: () => { return Promise.resolve(fixtures.dbpedia.organization); },
+        findTitle: () => { return Promise.resolve(fixtures.dbpedia.title); }
     }
 }
 
-
 function getEntitySourceStubs() {
     return {
-        person: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
-        place: (new Map()).set('geonames', getGeonamesStubs()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
-        organization: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
-        title: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia',getDbpediaStubs()),
+        person: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()),//.set('getty',getGettyStubs()).set('dbpedia',getDbpediaStubs()),
+        place: (new Map()).set('geonames', getGeonamesStubs()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('getty', getGettyStubs()).set('dbpedia', getDbpediaStubs()),
+        organization: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia', getDbpediaStubs()),
+        title: (new Map()).set('viaf', getViafStubs()).set('wikidata', getWikidataStubs()).set('dbpedia', getDbpediaStubs()),
         rs: (new Map()).set('viaf', getViafStubs())
     }
 }
 
+function testEntityType(methodToTest, entityType, entitySourceMethod) {
+    expect.assertions(11);
 
-// test('popSearchPerson', (assert=>{testEntityType('person', popSearchPerson)}
-async function testEntityType(assert, methodToTest, entityType, entitySourceMethod) {
-    // 'ASSEMBLE'
-    // doesModalExist(assert)
-    let dialogsCopy = require('../src/index.js')
-    let entitySources = getEntitySourceStubs();
-    let queryOptions = getQueryOptionsWithCallbackSpy();
-    dialogsCopy.registerEntitySources(entitySources)
-    dialogsCopy.setEnabledSources(sourceEnabledData)
+    const queryOptions = {
+        query: 'jones',
+        success: (results) => {}
+    };
 
-    // 'ACT'
-    await dialogsCopy[methodToTest](queryOptions);
-    // await new Promise(resolve => setTimeout(resolve, 100));
+    const spy = jest.spyOn(queryOptions, 'success');
 
-    // 'ASSERT
-    entitySources[entityType].forEach((entitySource, entitySourceName) => {
-        // assert.comment(entitySourceName)
-        assert.ok(entitySource[entitySourceMethod].calledWith(queryOptions.query), 'called with query')
-        assert.ok(entitySource[entitySourceMethod].calledOnce, 'called only once')
+    return new Promise((resolve, reject) => {
+        let dialogsCopy = require('../src/index.js')
+        let entitySources = getEntitySourceStubs();
+        dialogsCopy.registerEntitySources(entitySources)
+        dialogsCopy.setEnabledSources(sourceEnabledData)
 
-        assert.ok(isElementForIdVisible(`cwrc-${entitySourceName}-panel`), 'source panel is shown when it has a configured source')
-        confirmShownTextMatchesFixtureTest(entitySourceName, entityType, assert);
-    })
+        dialogsCopy.init();
 
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
+        $('#cwrc-entity-lookup').on('shown.bs.modal', () => {
+            expect(isElementForIdVisible('cwrc-entity-lookup')).toBe(true);
 
-    const fixtureForSelectedResult = fixtures.wikidata[entityType][1]
-    const elementForSelectedResult = document.getElementById('cwrc-wikidata-list').querySelectorAll('li')[1];
+            setTimeout(async () => {
+                entitySources[entityType].forEach((entitySource, entitySourceName) => {
+                    expect(isElementForIdVisible(`cwrc-${entitySourceName}-panel`)).toBe(true);
+                    confirmShownTextMatchesFixtureTest(entitySourceName, entityType);
+                })
 
-    // assert.comment('list visible: '+document.getElementById('cwrc-viaf-list').outerHTML)
-    // assert.comment('selected el: '+elementForSelectedResult.outerHTML)
+                const fixtureForSelectedResult = fixtures.wikidata[entityType][1]
+                const elementForSelectedResult = document.getElementById('cwrc-wikidata-list').querySelectorAll('li')[1];
 
-    testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult)
-    testSelection(assert, fixtureForSelectedResult, elementForSelectedResult, queryOptions)
-    assert.end()
-    // assert.comment('--- end ---')
+                await testIFrame(fixtureForSelectedResult, elementForSelectedResult)
+                testSelection(fixtureForSelectedResult, elementForSelectedResult, queryOptions)
+
+                expect(spy).toHaveBeenCalled();
+
+                spy.mockRestore();
+
+                resolve();
+            }, 50);
+        });
+
+        dialogsCopy[methodToTest](queryOptions);
+    });
 }
 
-function confirmShownTextMatchesFixtureTest(entitySourceName, entityType, assert) {
+function confirmShownTextMatchesFixtureTest(entitySourceName, entityType) {
     document.getElementById(`cwrc-${entitySourceName}-list`).querySelectorAll('li').forEach((result, index) => {
         let fixtureResult = fixtures[entitySourceName][entityType][index];
         let textThatWasShown = result.getElementsByTagName('div')[0].textContent
         let textThatShouldHaveBeenShown = fixtureResult.description ?
             `${fixtureResult.name} - ${fixtureResult.description}` :
             `${fixtureResult.name}`
-        assert.equals(textThatWasShown, textThatShouldHaveBeenShown, 'result text matches corresponding entity source result')
+        expect(textThatWasShown).toBe(textThatShouldHaveBeenShown);
     })
 }
 
-function testIFrame(assert, fixtureForSelectedResult, elementForSelectedResult ) {
+function testIFrame(fixtureForSelectedResult, elementForSelectedResult) {
+    return new Promise((resolve, reject) => {
+        $(elementForSelectedResult).on('shown.bs.popover', () => {
+            let iframeLoading = document.getElementById("entity-iframe-loading");
+            expect(doesElementExist(iframeLoading)).toBe(true);
+            
+            let iframe = document.getElementById('entity-iframe');
+            expect(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay)).toBe(true);
+            
+            $(elementForSelectedResult).click() // click again to de-select
 
-    // ACT: click on second result of viaf results
-    $(elementForSelectedResult).click()
+            resolve();
+        })
 
-    // ASSERT
-    let iframeLoading = document.getElementById("entity-iframe-loading");
-    assert.ok(doesElementExist(iframeLoading), 'the iframe loader exists');
-    // assert.ok(iframe.src.startsWith(fixtureForSelectedResult.uriForDisplay), 'the iframe src was set to the correct url')
-    // xhr.restore();
-    // await new Promise(resolve => setTimeout(resolve, 50));
-    $(elementForSelectedResult).click() // click again to de-select
+        $(elementForSelectedResult).click()
+    });
 }
 
-function testSelection(assert, fixtureForSelectedResult, elementForSelectedResult, queryOptions ) {
+function testSelection(fixtureForSelectedResult, elementForSelectedResult) {
     $(elementForSelectedResult).click()
     $('#cwrc-entity-lookup-select').click()
 
-    //await new Promise(resolve => setTimeout(resolve, 1000));
-    assert.ok(isElementForIdHidden('cwrc-entity-lookup'), 'the modal was hidden')
-
-    // ASSERT
-    assert.ok(queryOptions.success.calledOnce)
-    assert.ok(queryOptions.success.calledWith(fixtureForSelectedResult), 'the correct result was returned')
+    expect(isElementForIdHidden('cwrc-entity-lookup')).toBe(true);
 }
 
-function isElementForIdVisible(elementId){
+test('popSearchPerson', () => {
+    return testEntityType('popSearchPerson', 'person', 'findPerson');
+})
+// test('popSearchPlace', function(assert){
+//     return testEntityType('popSearchPlace','place', 'findPlace')
+// })
+// test('popSearchOrganization',   function(assert){
+//     return testEntityType('popSearchOrganization','organization', 'findOrganization');
+// })
+// test('popSearchTitle',   function(assert){
+//     return testEntityType('popSearchTitle','title', 'findTitle');
+// })
+
+test('showNoLinkButton', () => {
+    expect.assertions(1);
+
+    let dialogsCopy = require('../src/index.js')
+    let entitySources = getEntitySourceStubs();
+    dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
+
+    dialogsCopy.showNoLinkButton(true)
+
+    dialogsCopy.popSearchPerson({
+        query: 'jones',
+        success: (results) => {}
+    });
+
+    expect($('#cwrc-entity-lookup-nolink').length).toBe(1);
+})
+
+test('showCreateNewButton', () => {
+    expect.assertions(1);
+
+    let dialogsCopy = require('../src/index.js')
+    let entitySources = getEntitySourceStubs();
+    dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
+
+    dialogsCopy.showNoLinkButton(true)
+
+    dialogsCopy.popSearchPerson({
+        query: 'jones',
+        success: (results) => {}
+    });
+
+    expect($('#cwrc-entity-lookup-new').length).toBe(1);
+})
+
+test('showEditButton', () => {
+    expect.assertions(1);
+
+    let dialogsCopy = require('../src/index.js')
+    let entitySources = getEntitySourceStubs();
+    dialogsCopy.registerEntitySources(entitySources)
+    dialogsCopy.setEnabledSources(sourceEnabledData)
+
+    dialogsCopy.showNoLinkButton(true)
+
+    dialogsCopy.popSearchPerson({
+        query: 'jones',
+        success: (results) => {}
+    });
+
+    expect($('#cwrc-entity-lookup-edit').length).toBe(1);
+})
+
+function isElementForIdVisible(elementId) {
     return isElementVisible(document.getElementById(elementId))
 }
-function isElementForIdHidden(elementId){
+function isElementForIdHidden(elementId) {
     return isElementHidden(document.getElementById(elementId))
 }
 function isElementHidden(element) {
-    // return element.offsetLeft < 0
-    return ! isElementVisible(element)
+    return !isElementVisible(element)
 }
 function isElementVisible(element) {
-    //return ! isElementHidden(element)
     return $(element).is(':visible')
 }
 function doesElementForIdExist(elementId) {
@@ -185,84 +250,3 @@ function doesElementForIdExist(elementId) {
 function doesElementExist(element) {
     return $(element).length == 1;
 }
-function doesModalExist(assert) {
-    let b = new Boolean(document.getElementById('cwrc-entity-lookup') !== null)
-    assert.comment('doesModalExist: '+b.toString())
-}
-
-function delay(time) {
-    return new Promise(function(resolve, reject) {
-        setTimeout(function() {
-            resolve()
-        }, time)
-    })
-}
-
-
-test('popSearchPerson', function(assert){
-    testEntityType(assert, 'popSearchPerson', 'person', 'findPerson');
-})
-
-// test('popSearchPlace', function(assert){
-//     testEntityType(assert, 'popSearchPlace','place', 'findPlace')
-// })
-// test('popSearchOrganization',   function(assert){
-//     testEntityType(assert, 'popSearchOrganization','organization', 'findOrganization');
-// })
-// test('popSearchTitle',   function(assert){
-//     testEntityType(assert, 'popSearchTitle','title', 'findTitle');
-// })
-
-test('showNoLinkButton', async function(assert){
-    let dialogsCopy = require('../src/index.js')
-    let entitySources = getEntitySourceStubs();
-    let queryOptions = getQueryOptionsWithCallbackSpy();
-    dialogsCopy.registerEntitySources(entitySources)
-    dialogsCopy.setEnabledSources(sourceEnabledData)
-
-    dialogsCopy.showNoLinkButton(true)
-
-    await dialogsCopy.popSearchPerson(queryOptions);
-
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
-
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup-nolink'), 'the no link button was shown')
-
-    assert.end()
-})
-
-test('showCreateNewButton', async function(assert){
-    let dialogsCopy = require('../src/index.js')
-    let entitySources = getEntitySourceStubs();
-    let queryOptions = getQueryOptionsWithCallbackSpy();
-    dialogsCopy.registerEntitySources(entitySources)
-    dialogsCopy.setEnabledSources(sourceEnabledData)
-
-    dialogsCopy.showCreateNewButton(true)
-
-    await dialogsCopy.popSearchPerson(queryOptions);
-
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
-
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup-new'), 'the create new button was shown')
-
-    assert.end()
-})
-
-test('showEditButton', async function(assert){
-    let dialogsCopy = require('../src/index.js')
-    let entitySources = getEntitySourceStubs();
-    let queryOptions = getQueryOptionsWithCallbackSpy();
-    dialogsCopy.registerEntitySources(entitySources)
-    dialogsCopy.setEnabledSources(sourceEnabledData)
-
-    dialogsCopy.showEditButton(true)
-
-    await dialogsCopy.popSearchPerson(queryOptions);
-
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup'), 'the modal was shown')
-
-    assert.ok(isElementForIdVisible('cwrc-entity-lookup-edit'), 'the edit button was shown')
-
-    assert.end()
-})

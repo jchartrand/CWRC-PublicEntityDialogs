@@ -285,8 +285,7 @@ function showPopover(result, li, ev) {
         popoverAnchor = $(li);
 
         popoverAnchor.popover({
-            // delay: { "show": 600, "hide": 100 },
-            animation: true,
+            animation: false,
             trigger: "manual",
             //placement: "auto",
             html: true,
@@ -332,6 +331,7 @@ function showResults(results, entitySourceName) {
             }
 
             let liEl = $(`<li class="list-group-item cwrc-result-item">${resultItem}</li>`).appendTo(resultList)
+
             $(liEl).on('click', function (ev) {
                 $('.cwrc-result-item', '.cwrc-result-panel').removeClass('active')
                 if (selectedResult === result) {
@@ -519,7 +519,7 @@ function addHtmlAndHandlers() {
 
         var el = currentSearchOptions.parentEl || document.body;
         $(el).append($.parseHTML(
-`<div id="cwrc-entity-lookup" role="dialog" class="modal fade">
+`<div id="cwrc-entity-lookup" role="dialog" class="modal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -900,6 +900,8 @@ function popSearchRS(searchOptions) {
 }
 
 module.exports = {
+    init: addHtmlAndHandlers,
+    
     registerEntitySources: registerEntitySources,
 
     setEnabledSources: setEnabledSources,
