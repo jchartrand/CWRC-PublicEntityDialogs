@@ -324,7 +324,7 @@ function showResults(results, entitySourceName) {
                 `<div><b>${result.name}</b></div>`
 
             if (result.externalLink) {
-                resultItem += `<div><a href="${result.externalLink}" target="_blank">Open full description in new window</a></div>`
+                resultItem += `<div><a href="${result.externalLink}" target="_blank">Open Full Description in New Tab/Window</a></div>`
             }
             if (result.logo) {
                 resultItem += `<div class="logo" style="background-image: url(${result.logo})"></div>`
