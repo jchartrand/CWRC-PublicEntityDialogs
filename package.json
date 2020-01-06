@@ -14,7 +14,11 @@
     "linked",
     "data"
   ],
-  "contributors": ["James Chartrand", "Andrew MacDonald"],
+  "contributors": [
+    "James Chartrand",
+    "Andrew MacDonald",
+    "Luciano Frizzera"
+  ],
   "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs/issues"
