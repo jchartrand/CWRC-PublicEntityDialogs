@@ -1,6 +1,6 @@
 {
   "name": "cwrc-public-entity-dialogs",
-  "version": "1.16.3",
+  "version": "1.16.4",
   "description": "Dialogs for the CWRC-Writer that lookup people, places, organizations, and publications in public authority files.",
   "main": "src/index.js",
   "repository": {
