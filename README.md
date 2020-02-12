@@ -1,3 +1,5 @@
+# CWRC-PublicEntityDialogs
+
 ![Picture](http://cwrc.ca/logos/CWRC_logos_2016_versions/CWRCLogo-Horz-FullColour.png)
 
 [![Travis](https://img.shields.io/travis/cwrc/CWRC-PublicEntityDialogs.svg)](https://travis-ci.org/cwrc/CWRC-PublicEntityDialogs)
@@ -9,19 +11,18 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
-# CWRC-PublicEntityDialogs
-
 1. [Overview](#overview)
 1. [Installation](#installation)
 1. [Use](#use)
 1. [API](#api)
 1. [Development](#development)
 
-### Overview
+## Overview
 
 The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and titles) in various public name authority files (e.g. VIAF) or databases (e.g. Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
 
 The currently available entity lookup sources are:
+
 * [getty-entity-lookup](https://github.com/cwrc/getty-entity-lookup)
 * [wikidata-entity-lookup](https://github.com/cwrc/wikidata-entity-lookup)
 * [dbpedia-entity-lookup](https://github.com/cwrc/dbpedia-entity-lookup)
@@ -35,7 +36,8 @@ The currently available entity lookup sources are:
 ### Use
 
 The dialogs must be configured with entity lookup sources, using the registerEntitySources method. They are then passed to the CWRC-WriterBase.
-```
+
+```js
 const EntityLookupDialogs = require('cwrc-public-entity-dialogs')
 
 const viaf = require('viaf-entity-lookup')
