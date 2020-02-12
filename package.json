@@ -2,11 +2,6 @@
   "name": "cwrc-public-entity-dialogs",
   "version": "1.16.4",
   "description": "Dialogs for the CWRC-Writer that lookup people, places, organizations, and publications in public authority files.",
-  "main": "src/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs.git"
-  },
   "keywords": [
     "xml",
     "rdf",
@@ -14,16 +9,21 @@
     "linked",
     "data"
   ],
-  "contributors": [
-    "James Chartrand",
-    "Andrew MacDonald",
-    "Luciano Frizzera"
-  ],
-  "license": "GPL-2.0",
+  "homepage": "https://github.com/cwrc/CWRC-PublicEntityDialogs#readme",
   "bugs": {
     "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs/issues"
   },
-  "homepage": "https://github.com/cwrc/CWRC-PublicEntityDialogs#readme",
+  "license": "GPL-2.0",
+  "contributors": [
+    "James Chartrand <jc.chartrand@gmail.com>",
+    "Andrew MacDonald <andrewjames.code@gmail.com>",
+    "Luciano Frizzera <lucaju@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs.git"
+  },
+  "main": "src/index.js",
   "scripts": {
     "cm": "git-cz",
     "test": "jest",
