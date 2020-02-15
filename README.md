@@ -19,47 +19,47 @@
 
 ## Overview
 
-The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and titles) in various public name authority files (e.g. VIAF) or databases (e.g. Wikidata).  The dialogs only provide public lookup.  Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
+The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.com/cwrc/CWRC-WriterBase) to lookup entities (people, places, organizations, and titles) in various public name authority files (e.g. VIAF) or databases (e.g. Wikidata). The dialogs only provide public lookup. Creation/editing/deletion of entities should be made outside of the CWRC-Writer in the name authority itself.
 
 The currently available entity lookup sources are:
 
-* [getty-entity-lookup](https://github.com/cwrc/getty-entity-lookup)
-* [wikidata-entity-lookup](https://github.com/cwrc/wikidata-entity-lookup)
-* [dbpedia-entity-lookup](https://github.com/cwrc/dbpedia-entity-lookup)
-* [viaf-entity-lookup](https://github.com/cwrc/viaf-entity-lookup)
-* [geonames-entity-lookup](https://github.com/cwrc/geonames-entity-lookup)
+- [getty-entity-lookup](https://github.com/cwrc/getty-entity-lookup)
+- [wikidata-entity-lookup](https://github.com/cwrc/wikidata-entity-lookup)
+- [dbpedia-entity-lookup](https://github.com/cwrc/dbpedia-entity-lookup)
+- [viaf-entity-lookup](https://github.com/cwrc/viaf-entity-lookup)
+- [geonames-entity-lookup](https://github.com/cwrc/geonames-entity-lookup)
 
-### Installation
+## Installation
 
-```npm install cwrc-public-entity-dialogs```
+`npm install cwrc-public-entity-dialogs`
 
-### Use
+## Use
 
 The dialogs must be configured with entity lookup sources, using the registerEntitySources method. They are then passed to the CWRC-WriterBase.
 
 ```js
-const EntityLookupDialogs = require('cwrc-public-entity-dialogs')
+const EntityLookupDialogs = require("cwrc-public-entity-dialogs");
 
-const viaf = require('viaf-entity-lookup')
-const dbpedia = require('dbpedia-entity-lookup')
+const viaf = require("viaf-entity-lookup");
+const dbpedia = require("dbpedia-entity-lookup");
 
 EntityLookupDialogs.registerEntitySources({
-  person: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
-  place: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
-  organization: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia),
-  title: (new Map()).set('viaf', viaf).set('dbpedia', dbpedia)
-})
+  person: new Map().set("viaf", viaf).set("dbpedia", dbpedia),
+  place: new Map().set("viaf", viaf).set("dbpedia", dbpedia),
+  organization: new Map().set("viaf", viaf).set("dbpedia", dbpedia),
+  title: new Map().set("viaf", viaf).set("dbpedia", dbpedia)
+});
 
-const CWRCWriter = require('cwrc-writer-base')
+const CWRCWriter = require("cwrc-writer-base");
 const writer = new CWRCWriter({
   entityLookupDialogs: EntityLookupDialogs
-})
- ```
+});
+```
 
-### API
+## API
 
 [View the full API here](https://github.com/cwrc/CWRC-PublicEntityDialogs/blob/master/API.md)
 
-### Development
+## Development
 
 [CWRC-Writer-Dev-Docs](https://github.com/cwrc/CWRC-Writer-Dev-Docs) explains how to work with CWRC-Writer GitHub repositories, including this one.

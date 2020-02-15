@@ -29,8 +29,8 @@ The list of possible entity lookup sources, their IDs, titles, and whether or no
 **Kind**: static property of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **Properties**
 
-| Name     | Type                |
-| -------- | ------------------- |
+| Name     | Type     |
+| -------- | -------- |
 | cwrc     | `String` |
 | viaf     | `String` |
 | dbpedia  | `String` |
@@ -49,11 +49,11 @@ The values of those keys should be Maps where the key is the lookup ID and the v
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **See**: cwrc-public-entity-dialogs.lookupSourceMetadata
 
-| Param   | Type                |
-| ------- | ------------------- |
+| Param   | Type     |
+| ------- | -------- |
 | sources | `Object` |
 
-**Example**
+#### Example
 
 ```js
 const viaf = require("viaf-entity-lookup");
@@ -75,8 +75,8 @@ Currently only used by [Islandora CWRC Writer](https://github.com/cwrc/Islandora
 
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)
 
-| Param | Type                |
-| ----- | ------------------- |
+| Param | Type     |
+| ----- | -------- |
 | url   | `String` |
 
 <a name="module_cwrc-public-entity-dialogs.setCollectionsRoot"></a>
@@ -89,8 +89,8 @@ Currently only used by [Islandora CWRC Writer](https://github.com/cwrc/Islandora
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **See**: 'cwrc-title-entity-dialog'
 
-| Param | Type                |
-| ----- | ------------------- |
+| Param | Type     |
+| ----- | -------- |
 | url   | `String` |
 
 <a name="module_cwrc-public-entity-dialogs.setShowCreateNewButton"></a>
@@ -102,8 +102,8 @@ Currently only used by [Islandora CWRC Writer](https://github.com/cwrc/Islandora
 
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)
 
-| Param | Type                 |
-| ----- | -------------------- |
+| Param | Type      |
+| ----- | --------- |
 | value | `Boolean` |
 
 <a name="module_cwrc-public-entity-dialogs.setShowEditButton"></a>
@@ -115,8 +115,8 @@ Currently only used by [Islandora CWRC Writer](https://github.com/cwrc/Islandora
 
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)
 
-| Param | Type                 |
-| ----- | -------------------- |
+| Param | Type      |
+| ----- | --------- |
 | value | `Boolean` |
 
 <a name="module_cwrc-public-entity-dialogs.setShowNoLinkButton"></a>
@@ -127,8 +127,8 @@ Whether to show the Tag Without Linking button, which allows the user to skip th
 
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)
 
-| Param | Type                 |
-| ----- | -------------------- |
+| Param | Type      |
+| ----- | --------- |
 | value | `Boolean` |
 
 <a name="module_cwrc-public-entity-dialogs.returnResult"></a>
@@ -140,8 +140,8 @@ Call the success method specified in searchOptions with the entity lookup result
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **Access**: protected
 
-| Param             | Type                | Description                          |
-| ----------------- | ------------------- | ------------------------------------ |
+| Param             | Type     | Description                          |
+| ----------------- | -------- | ------------------------------------ |
 | result            | `Object` | The entity lookup result             |
 | result.uri        | `String` | The entity URI                       |
 | result.name       | `String` | The entity name/lemma                |
@@ -155,11 +155,11 @@ Set which entity lookup sources are enabled, i.e. available to the user.
 
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)
 
-| Param  | Type                |
-| ------ | ------------------- |
+| Param  | Type     |
+| ------ | -------- |
 | config | `Object` |
 
-**Example**
+#### Example
 
 ```js
 {'viaf': true, 'wikidata': true, 'getty': true, 'dbpedia': true, 'geonames': true}
@@ -174,18 +174,18 @@ Initialize and display an entity lookup dialog.
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **Access**: protected
 
-| Param                    | Type                  | Default                    | Description                                                                             |
-| ------------------------ | --------------------- | -------------------------- | --------------------------------------------------------------------------------------- |
-| entityType               | `String`   |                            | The entity type                                                                         |
-| entityLookupMethodName   | `String`   |                            | The name of the method to call on the lookup module                                     |
-| entityLookupTitle        | `String`   |                            | The dialog title                                                                        |
-| searchOptions            | `Object`   |                            | The search options                                                                      |
-| searchOptions.query      | `String`   |                            | The search query                                                                        |
-| searchOptions.success    | `function` |                            | The function to call with the entity the user selected, see returnResult for the format |
-| searchOptions.cancelled  | `function` |                            | The function to call if the user cancelled the dialog                                   |
+| Param                    | Type       | Default         | Description                                                                             |
+| ------------------------ | ---------- | --------------- | --------------------------------------------------------------------------------------- |
+| entityType               | `String`   |                 | The entity type                                                                         |
+| entityLookupMethodName   | `String`   |                 | The name of the method to call on the lookup module                                     |
+| entityLookupTitle        | `String`   |                 | The dialog title                                                                        |
+| searchOptions            | `Object`   |                 | The search options                                                                      |
+| searchOptions.query      | `String`   |                 | The search query                                                                        |
+| searchOptions.success    | `function` |                 | The function to call with the entity the user selected, see returnResult for the format |
+| searchOptions.cancelled  | `function` |                 | The function to call if the user cancelled the dialog                                   |
 | [searchOptions.parentEl] | `Element`  | `document.body` | The element to append the dialog to                                                     |
-| [searchOptions.uri]      | `String`   |                            | The entity URI, if editing                                                              |
-| [searchOptions.name]     | `String`   |                            | The entity name/lemma, if editing                                                       |
+| [searchOptions.uri]      | `String`   |                 | The entity URI, if editing                                                              |
+| [searchOptions.name]     | `String`   |                 | The entity name/lemma, if editing                                                       |
 
 <a name="module_cwrc-public-entity-dialogs.popSearchPerson"></a>
 
@@ -196,8 +196,8 @@ Open a person entity lookup dialog.
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **See**: cwrc-public-entity-dialogs.initialize
 
-| Param         | Type                |
-| ------------- | ------------------- |
+| Param         | Type     |
+| ------------- | -------- |
 | searchOptions | `Object` |
 
 <a name="module_cwrc-public-entity-dialogs.popSearchPlace"></a>
@@ -209,8 +209,8 @@ Open a place entity lookup dialog.
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **See**: cwrc-public-entity-dialogs.initialize
 
-| Param         | Type                |
-| ------------- | ------------------- |
+| Param         | Type     |
+| ------------- | -------- |
 | searchOptions | `Object` |
 
 <a name="module_cwrc-public-entity-dialogs.popSearchOrganization"></a>
@@ -222,8 +222,8 @@ Open a organization entity lookup dialog.
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **See**: cwrc-public-entity-dialogs.initialize
 
-| Param         | Type                |
-| ------------- | ------------------- |
+| Param         | Type     |
+| ------------- | -------- |
 | searchOptions | `Object` |
 
 <a name="module_cwrc-public-entity-dialogs.popSearchTitle"></a>
@@ -235,6 +235,6 @@ Open a title entity lookup dialog.
 **Kind**: static method of [`cwrc-public-entity-dialogs`](#module_cwrc-public-entity-dialogs)  
 **See**: cwrc-public-entity-dialogs.initialize
 
-| Param         | Type                |
-| ------------- | ------------------- |
+| Param         | Type     |
+| ------------- | -------- |
 | searchOptions | `Object` |
