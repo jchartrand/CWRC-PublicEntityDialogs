@@ -14,7 +14,7 @@ if ($ === undefined) {
     window.cwrcQuery = $
 }
 
-let BroadcastChannel = require('broadcast-channel')
+let { BroadcastChannel } = require('broadcast-channel')
 if (BroadcastChannel.default !== undefined) {
 	BroadcastChannel = BroadcastChannel.default
 }
