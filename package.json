@@ -45,6 +45,7 @@
     "commitizen": "^4.0.3",
     "cz-conventional-changelog": "^3.1.0",
     "dbpedia-entity-lookup": "^0.6.1",
+    "eslint": "^6.8.0",
     "geonames-entity-lookup": "^1.1.7",
     "getty-entity-lookup": "^1.4.5",
     "git-cz": "^4.3.1",
