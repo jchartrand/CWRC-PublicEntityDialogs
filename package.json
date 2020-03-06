@@ -2,11 +2,6 @@
   "name": "cwrc-public-entity-dialogs",
   "version": "1.16.4",
   "description": "Dialogs for the CWRC-Writer that lookup people, places, organizations, and publications in public authority files.",
-  "main": "src/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs.git"
-  },
   "keywords": [
     "xml",
     "rdf",
@@ -14,16 +9,21 @@
     "linked",
     "data"
   ],
-  "contributors": [
-    "James Chartrand",
-    "Andrew MacDonald",
-    "Luciano Frizzera"
-  ],
-  "license": "GPL-2.0",
+  "homepage": "https://github.com/cwrc/CWRC-PublicEntityDialogs#readme",
   "bugs": {
     "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs/issues"
   },
-  "homepage": "https://github.com/cwrc/CWRC-PublicEntityDialogs#readme",
+  "license": "GPL-2.0",
+  "contributors": [
+    "James Chartrand <jc.chartrand@gmail.com>",
+    "Andrew MacDonald <andrewjames.code@gmail.com>",
+    "Luciano Frizzera <lucaju@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cwrc/CWRC-PublicEntityDialogs.git"
+  },
+  "main": "src/index.js",
   "scripts": {
     "cm": "git-cz",
     "test": "jest",
@@ -34,32 +34,23 @@
   },
   "dependencies": {
     "bootstrap": "^3.4.1",
-    "broadcast-channel": "^1.3.0",
+    "broadcast-channel": "^3.1.0",
     "jquery": "^3.4.1",
-    "js-cookie": "2.1.4"
+    "js-cookie": "^2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "babelify": "^10.0.0",
-    "browserify": "^16.2.3",
-    "codecov": "^3.5.0",
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.8.6",
+    "codecov": "^3.6.5",
     "commitizen": "^4.0.3",
-    "cz-conventional-changelog": "^2.1.0",
-    "dbpedia-entity-lookup": "^0.4.2",
-    "geonames-entity-lookup": "^1.1.7",
-    "getty-entity-lookup": "^1.4.5",
-    "git-cz": "^1.8.4",
-    "husky": "^2.1.0",
-    "jest": "^24.9.0",
-    "jsdoc-to-markdown": "^5.0.0",
-    "mkdirp": "0.5.1",
-    "semantic-release": "^15.13.19",
-    "tape-catch": "^1.0.6",
-    "travis-deploy-once": "^5.0.11",
-    "viaf-entity-lookup": "^1.2.5",
-    "watchify": "^3.11.1",
-    "wikidata-entity-lookup": "^1.2.4"
+    "cz-conventional-changelog": "^3.1.0",
+    "eslint": "^6.8.0",
+    "git-cz": "^4.3.1",
+    "husky": "^4.2.3",
+    "jest": "^25.1.0",
+    "jsdoc-to-markdown": "^5.0.3",
+    "semantic-release": "^17.0.4",
+    "travis-deploy-once": "^5.0.11"
   },
   "config": {
     "commitizen": {
