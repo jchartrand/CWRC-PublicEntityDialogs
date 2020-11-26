@@ -23,11 +23,12 @@ The CWRC-PublicEntityDialogs are used with the [CWRC-WriterBase](https://github.
 
 The currently available entity lookup sources are:
 
-- [getty-entity-lookup](https://github.com/cwrc/getty-entity-lookup)
-- [wikidata-entity-lookup](https://github.com/cwrc/wikidata-entity-lookup)
 - [dbpedia-entity-lookup](https://github.com/cwrc/dbpedia-entity-lookup)
-- [viaf-entity-lookup](https://github.com/cwrc/viaf-entity-lookup)
 - [geonames-entity-lookup](https://github.com/cwrc/geonames-entity-lookup)
+- [getty-entity-lookup](https://github.com/cwrc/getty-entity-lookup)
+- [lgpn-entity-lookup](https://github.com/cwrc/lgpn-entity-lookup)
+- [viaf-entity-lookup](https://github.com/cwrc/viaf-entity-lookup)
+- [wikidata-entity-lookup](https://github.com/cwrc/wikidata-entity-lookup)
 
 ## Installation
 
