@@ -34,7 +34,7 @@
   "dependencies": {
     "bootstrap": "^3.4.1",
     "broadcast-channel": "^3.3.0",
-    "jquery": "3.4.1",
+    "jquery": "^3.5.1",
     "js-cookie": "^2.2.1"
   },
   "devDependencies": {
