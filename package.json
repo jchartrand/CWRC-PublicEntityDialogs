@@ -38,21 +38,20 @@
     "js-cookie": "^2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
     "codecov": "^3.8.1",
-    "commitizen": "^4.2.2",
-    "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^7.16.0",
+    "commitizen": "^4.2.3",
+    "eslint": "^7.19.0",
     "git-cz": "^4.7.6",
-    "husky": "^4.3.6",
+    "husky": "^4.3.8",
     "jest": "^26.6.3",
     "jsdoc-to-markdown": "^6.0.1",
-    "semantic-release": "^17.3.0"
+    "semantic-release": "^17.3.7"
   },
   "config": {
     "commitizen": {
-      "path": "cz-conventional-changelog"
+      "path": "git-cz"
     }
   },
   "husky": {
