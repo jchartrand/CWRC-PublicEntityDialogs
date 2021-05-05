@@ -265,6 +265,12 @@ function destroyPopover() {
     }
 }
 
+//! popover should be deprecated on the next redesign
+//Reason: Externat resources accessing with CORS are blocker.
+// There is workaround in place with proxies serving these resources out of CWRC servers.
+// Since CWRC-Writer usage has expand beyond CWRC, it is not feasiable to CWRC keep these proxies.
+// A possiblle solution is to move the proxies to NSSI.
+// Or just redirect the user to a new TAB.
 let popoverAnchor = null;
 function showPopover(result, li, ev) {
     ev.stopPropagation()
