@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 'use strict';
 
 let $ = require('jquery');
